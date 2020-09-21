@@ -1,0 +1,22 @@
+{
+    "name": "nailfor/Elasticsearch",
+    "description": "Eloquent like library for Elasticsearch",
+    "keywords": ["eloquent", "elasticsearch"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nailfor"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "nailfor\\Elasticsearch\\": "src"
+        }
+    },
+    "require": {
+        "php": ">=7.1.0",
+        "elasticsearch/elasticsearch": "^7.0",
+    },
+    "minimum-stability": "dev"
+}
