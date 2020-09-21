@@ -1,5 +1,5 @@
 {
-    "name": "nailfor/Elasticsearch",
+    "name": "nailfor/elasticsearch",
     "description": "Eloquent like library for Elasticsearch",
     "keywords": ["eloquent", "elasticsearch"],
     "type": "library",
