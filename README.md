@@ -30,6 +30,19 @@ Add config/app.php
         nailfor\Elasticsearch\ElasticsearchServiceProvider::class,
 
 ```
+and config/database.php
+```
+    'connections' => [
+        ...
+        'elasticsearch' => [ //the name of connection in your models(default)
+            'driver'    => 'elasticearch',
+            'config'    => [
+                'hosts'     => [env('ELASTICSEARCH_HOST', 'localhost:9200'),],
+                'retries'   => 1,
+            ],
+        ],
+
+```
 
 Example model
 ```
@@ -39,6 +52,8 @@ use nailfor\Elasticsearch\Eloquent\Model;
 
 class esSearch extends Model
 {
+    //protected $connection = 'elasticsearch'; //(default)
+
     //your index name
     protected $table='index';
 }
