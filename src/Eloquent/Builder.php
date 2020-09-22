@@ -4,7 +4,6 @@ namespace nailfor\Elasticsearch\Eloquent;
 
 use nailfor\Elasticsearch\Query\QueryBuilder as Query;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * Elasticsearch
@@ -17,11 +16,24 @@ class Builder extends EloquentBuilder
         $this->query = $query;
     }
     
-    public function query($query)
+    /**
+     * Set search query
+     * @param string $query
+     * @return $this
+     */
+    public function query(string $query)
     {
         $this->query->setQuery($query);
         
         return $this;
     }
 
+    /**
+     * Print debug request
+     */
+    public function dd()
+    {
+        $query = $this->getQuery();
+        dd($query->getParams());
+    }
 }

@@ -18,7 +18,9 @@ class Connection extends BaseConnection
         $this->client = ClientBuilder::fromConfig($config['config']);
     }
     
-    
+    /**
+     * {@inheritdoc}
+     */
     public function query()
     {
         return new QueryBuilder(
@@ -26,6 +28,10 @@ class Connection extends BaseConnection
         );
     }
     
+    /**
+     * Return Elasticsearch client
+     * @return type
+     */
     public function getClient()
     {
         return $this->client;
