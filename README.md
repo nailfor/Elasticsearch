@@ -22,10 +22,13 @@ to the require section of your application's `composer.json` file.
 Usage
 -----
 
-Publish js classes
+Add config/app.php
 
 ```
-php artisan vendor:publish --provider="nailfor\elasticsearch\ElasticsearchServiceProvider"
+    'aliases' => [
+        ...
+        nailfor\Elasticsearch\ElasticsearchServiceProvider::class,
+
 ```
 
 Example model
