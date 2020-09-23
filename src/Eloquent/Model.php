@@ -3,6 +3,7 @@
 namespace nailfor\Elasticsearch\Eloquent;
 
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Support\Facades\Date;
 
 /**
  * Elasticsearch
@@ -16,6 +17,8 @@ class Model extends BaseModel
      * @var string|null
      */
     protected $connection = 'elasticsearch';
+    protected $dateFormat = 'U';
+    protected $primaryKey = '_id';
 
     /**
      * {@inheritdoc}
@@ -23,5 +26,18 @@ class Model extends BaseModel
     public function newEloquentBuilder($query)
     {
         return new Builder($query);
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function fromDateTime($value)
+    {
+        if ($this->dateFormat == 'U') {
+            return $value->timestamp;
+        }
+        
+        return parent::fromDateTime($value);
     }
 }

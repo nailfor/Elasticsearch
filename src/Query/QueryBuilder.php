@@ -49,7 +49,9 @@ class QueryBuilder extends Builder
         $res = $res['hits']['hits'] ?? [];
         
         $items = array_map(function ($item) {
-            return $item['_source'];
+            $res = $item['_source'];
+            $res['_id'] = $item['_id'];
+            return $res;
         }, $res);
         
         return $items;
@@ -160,5 +162,71 @@ class QueryBuilder extends Builder
         }
         
         return $res; 
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function insertGetId(array $values, $sequence = null)
+    {
+        $client = $this->connection->getClient();
+        $params = [
+            'index' => $this->from,
+            'body' => $values,
+        ];
+        
+        $id = $this->getElasticKey($values, $sequence);
+        if ($id) {
+            $params['id'] = $id;
+        }
+        
+        $res = $client->index($params);
+        return $res['_id'] ?? false;
+    }
+    
+    /**
+     * Create uniq key
+     * @param type $values
+     * @param type $sequence
+     * @return int
+     */
+    public function getElasticKey($values, $sequence)
+    {
+        $id = $values[$sequence] ?? 0;
+        if (!$id) {
+            return 0;
+        }
+            
+        return "{$this->from}_{$id}";
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function delete($id = null)
+    {
+        $client = $this->connection->getClient();
+        
+        
+        $_id = $id;
+        if (!$_id) {
+            foreach($this->wheres ?? [] as $where) {
+                if ($where['column'] == '_id') {
+                    $_id = $where['value'];
+                    break;
+                }
+            }
+            
+            if (!$_id) {
+                return;
+            }
+        }
+        
+        $params = [
+            'index' => $this->from,
+            'id' => $_id
+        ];
+        
+        return $client->delete($params);
     }
 }
