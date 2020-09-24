@@ -139,7 +139,7 @@ class QueryBuilder extends Builder
             $f = new $class($where, $res);
             $filter = $f->getFilter();
             
-            $res = array_merge($res, $filter);
+            $res[] = $filter;
         }
         
         return $res;

@@ -8,27 +8,14 @@ class betweenFilter extends Filter
     protected $to;
     protected $field = 'range';
     
-    public function __construct($data, $filter)
+    public function __construct($data)
     {
-        parent::__construct($data, $filter);
-        
-        $old = [];
-        if ($filter) {
-            $range = $filter['range'] ?? [];
-            $old = $range[$this->column] ?? [];
-        }
+        parent::__construct($data);
         
         $val = $data['values'] ?? [];
-        $from   = $val[0] ?? 0;
-        $to     = $val[1] ?? 0;
-        if ($old) {
-            $this->from = max($from, $old['gte'] ?? 0);
-            $this->to   = max($to, $old['lte'] ?? 0);
-            return;
-        }
         
-        $this->from = $from;
-        $this->to = $to;
+        $this->from = $val[0] ?? 0;
+        $this->to = $val[1] ?? 0;
     }
     
     /**

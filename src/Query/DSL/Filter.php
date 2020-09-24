@@ -6,14 +6,12 @@ class Filter
 {
     protected $column;
     protected $value;
-    protected $filter;
     protected $field = 'term';
     
-    public function __construct($data, $filter)
+    public function __construct($data)
     {
         $this->column   = $data['column'] ?? '';
         $this->value    = $data['value'] ?? '';
-        $this->filter   = $filter;
     }
     
     /**
@@ -27,10 +25,9 @@ class Filter
         $res = [
             $this->column => $this->getValue(),
         ];
-        $old = $this->filter[$field] ?? [];
 
         return [
-            $field => array_merge($old, $res),
+            $field => $res,
         ];
     }
     
