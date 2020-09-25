@@ -207,7 +207,6 @@ class QueryBuilder extends Builder
     {
         $client = $this->connection->getClient();
         
-        
         $_id = $id;
         if (!$_id) {
             foreach($this->wheres ?? [] as $where) {
@@ -228,5 +227,74 @@ class QueryBuilder extends Builder
         ];
         
         return $client->delete($params);
+    }
+
+    /**
+     * Create an elasticsearch index
+     * @param array $settings
+     * @param array $mappingProperties
+     * @param int $shards
+     * @param int $replicas
+     * @return type
+     */
+    public function createIndex(array $settings = [],array $mappingProperties = [], int $shards = null, int $replicas = null) 
+    {
+        $client = $this->connection->getClient();
+        
+        $index = [
+            'index' => $this->from,
+        ];
+        
+        if ($settings) {
+            $index['body']['settings'] = $settings;
+        }
+
+        if ($mappingProperties) {
+            $index['body']['mappings'] = [
+                'properties' => $mappingProperties,
+            ];
+        }        
+        
+        if (!is_null($shards)) {
+            $index['body']['settings']['number_of_shards'] = $shards;
+        }
+
+        if (!is_null($replicas)) {
+            $index['body']['settings']['number_of_replicas'] = $replicas;
+        }
+
+        return $client->indices()->create($index);
+    }
+    
+    /**
+     * Check exists index
+     * @return type
+     */
+    public function existsIndex()
+    {
+        $client = $this->connection->getClient();
+
+        $index = [
+            'index' => $this->from,
+            'type'  => '_doc',
+        ];
+        
+        return $client->indices()->existsType($index);
+    }
+
+    /**
+     * Drop index
+     * @return type
+     */
+    public function deleteIndex()
+    {
+        $client = $this->connection->getClient();
+        
+        $index = [
+            'index' => $this->from,
+        ];
+        
+        return $client->indices()->delete($index);
+
     }
 }

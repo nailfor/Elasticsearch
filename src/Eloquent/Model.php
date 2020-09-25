@@ -40,4 +40,23 @@ class Model extends BaseModel
         
         return parent::fromDateTime($value);
     }
+    
+    /**
+     * Get indexSettings if exists
+     * @return array
+     */
+    public function getIndexSettings() : array
+    {
+        return $this->indexSettings ?? [];
+    }
+    
+    /**
+     * Get mappingProperties if exists
+     * @return array
+     */
+    public function getMapping() : array
+    {
+        return $this->mappingProperties ?? [];
+    }
+    
 }
