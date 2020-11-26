@@ -6,7 +6,6 @@ use nailfor\Elasticsearch\Query\DSL\Filter;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Arr;
 
-
 /**
  * Elasticsearch
  *
@@ -14,6 +13,8 @@ use Illuminate\Support\Arr;
 class QueryBuilder extends Builder
 {
     protected $query;
+    protected $count;
+    protected $res;
     
     /**
      * {@inheritdoc}
@@ -46,6 +47,9 @@ class QueryBuilder extends Builder
         $client = $this->connection->getClient();
 
         $res = $client->search($params);
+        $this->res = $res;
+        $this->count = $res['hits']['total']['value'];
+        
         $res = $res['hits']['hits'] ?? [];
         
         $items = array_map(function ($item) {
@@ -56,6 +60,35 @@ class QueryBuilder extends Builder
         
         return $items;
     }
+    
+    protected function getCount()
+    {
+        return $this->count;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getCountForPagination($columns = ['*'])
+    {
+        $results = $this->runPaginationCountQuery($columns);
+        
+        return $results;
+    }
+    
+    protected function runPaginationCountQuery($columns = ['*'])
+    {
+        $without = $this->unions ? ['orders', 'limit', 'offset'] : ['columns', 'orders', 'limit', 'offset'];
+        $query = $this->cloneWithout($without)
+            ->cloneWithoutBindings($this->unions ? ['order'] : ['select', 'order'])
+            ->setAggregate('count', $this->withoutSelectAliases($columns))
+        ;
+        
+        $query->get();
+        
+        
+        return $query->getCount();
+    }    
     
     /**
      * Return request params
