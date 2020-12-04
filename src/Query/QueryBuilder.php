@@ -12,6 +12,7 @@ use Illuminate\Support\Arr;
  */
 class QueryBuilder extends Builder
 {
+    protected $rawQuery;
     protected $query;
     protected $count;
     protected $res;
@@ -36,6 +37,15 @@ class QueryBuilder extends Builder
     public function setQuery(string $query)
     {
         $this->query = $query;
+    }
+
+    /**
+     * Set raw query
+     * @param type $query
+     */
+    public function setRawQuery($query)
+    {
+        $this->rawQuery = $query;
     }
     
     /**
@@ -96,19 +106,26 @@ class QueryBuilder extends Builder
      */
     public function getParams() : array
     {
-        $bool['must'] = $this->getMust();
+        $bool['must'][] = $this->getMust();
         $filter = $this->getFilter();
         if ($filter) {
-            $bool['filter'] = $filter;
+            $bool['must'][] = $filter;
+        }
+        
+        if ($this->rawQuery) {
+            $body = $this->rawQuery;
+        }
+        else {
+            $body = [
+                'query' => [
+                    'bool' => $bool,
+                ],
+            ];
         }
         
         $params = [
             'index' => $this->from,
-            'body' => [
-                'query' => [
-                    'bool' => $bool,
-                ],
-            ],
+            'body' => $body,
         ];
         
         $sort = $this->getSort();
@@ -134,7 +151,7 @@ class QueryBuilder extends Builder
     protected function getMust() : array
     {
         $columns = $this->columns ? : ['*'];
-        $query = $this->query ? : '';
+        $query = $this->query;
 
         $res = [];
         if ($query) {

@@ -27,6 +27,19 @@ class Builder extends EloquentBuilder
         
         return $this;
     }
+    
+    /**
+     * Set search query
+     * @param $query
+     * @return $this
+     */
+    public function rawQuery($query)
+    {
+        $this->query->setRawQuery($query);
+        
+        return $this;
+    }
+    
 
     /**
      * Print debug request
