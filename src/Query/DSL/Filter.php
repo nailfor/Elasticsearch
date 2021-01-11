@@ -22,13 +22,22 @@ class Filter
     {
         $field = $this->field;
 
-        $res = [
+        $res = array_merge([
             $this->column => $this->getValue(),
-        ];
+        ], $this->append());
 
         return [
             $field => $res,
         ];
+    }
+    
+    /**
+     * Return append for getFilter
+     * @return type
+     */
+    protected function append()
+    {
+        return [];
     }
     
     /**

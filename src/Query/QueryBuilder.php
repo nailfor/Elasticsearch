@@ -60,6 +60,11 @@ class QueryBuilder extends Builder
         $this->res = $res;
         $this->count = $res['hits']['total']['value'];
         
+        $aggs = $res['aggregations'] ?? [];
+        if ($aggs) {
+            return $this->elasticAggregate($aggs);
+        }
+        
         $res = $res['hits']['hits'] ?? [];
         
         $items = array_map(function ($item) {
@@ -71,6 +76,59 @@ class QueryBuilder extends Builder
         return $items;
     }
     
+    /**
+     * Return linear array
+     * @param type $aggs
+     * @return array
+     */
+    protected function elasticAggregate($aggs) : array
+    {
+        $res = [];
+        foreach($aggs as $agg => $items) {
+            $item = $this->getBuckets($items, $agg);
+            $res = array_merge($res, $item);
+        }
+        
+        return $res;
+    }
+    
+    /**
+     * Return bucket of loads
+     * @param type $items
+     * @param type $agg
+     * @param type $append
+     * @return array
+     */
+    protected function getBuckets($items, $agg, $append = []) : array
+    {
+        $res = [];
+        $buckets = $items['buckets'] ?? [];
+        foreach ($buckets as $item) {
+            $itBucket = 0;
+            foreach ($item as $key => $val) {
+                if (is_array($val) && $val['buckets']) {
+                    $bucket = $this->getBuckets($val, $key, [$agg => $item['key']]);
+                    $res = array_merge($res, $bucket);
+                    $itBucket = 1;
+                }
+            }
+            
+            if (!$itBucket) {
+                $res[] = array_merge($append, [
+                    $agg    => $item['key'],
+                    'count' => $item['doc_count'],
+                ]);
+            }
+        }
+        
+        
+        return $res;
+    }
+    
+    /**
+     * Return count of records
+     * @return type
+     */
     protected function getCount()
     {
         return $this->count;
@@ -106,21 +164,26 @@ class QueryBuilder extends Builder
      */
     public function getParams() : array
     {
-        $bool['must'][] = $this->getMust();
-        $filter = $this->getFilter();
-        if ($filter) {
-            $bool['must'][] = $filter;
-        }
-        
         if ($this->rawQuery) {
             $body = $this->rawQuery;
         }
         else {
+            $bool['must'][] = $this->getMust();
+            $filter = $this->getFilter();
+            if ($filter) {
+                $bool['must'][] = $filter;
+            }
+            
             $body = [
                 'query' => [
                     'bool' => $bool,
                 ],
             ];
+            
+            $groups = $this->getGroups();
+            if ($groups) {
+                $body['aggs'] = $groups;
+            }
         }
         
         $params = [
@@ -180,19 +243,32 @@ class QueryBuilder extends Builder
         $res = [];
         foreach($this->wheres ?? [] as $where) {
             $type = $where['type'];
-            $namespace = __NAMESPACE__;
-            $class = "$namespace\\DSL\\{$type}Filter";
-            
-            if (!class_exists($class)) {
-                $class = Filter::class;
-            }
-            $f = new $class($where, $res);
-            $filter = $f->getFilter();
+            $filter = $this->getFilterByType($type, $where, $res);
             
             $res[] = $filter;
         }
         
         return $res;
+    }
+    
+    /**
+     * Return filter by name
+     * @param type $type
+     * @param type $params
+     * @param type $res
+     * @return type
+     */
+    protected function getFilterByType($type, $params, $res = []) 
+    {
+        $namespace = __NAMESPACE__;
+        $class = "$namespace\\DSL\\{$type}Filter";
+
+        if (!class_exists($class)) {
+            $class = Filter::class;
+        }
+        $f = new $class($params, $res);
+        
+        return $f->getFilter();
     }
     
     /**
@@ -212,6 +288,41 @@ class QueryBuilder extends Builder
         }
         
         return $res; 
+    }
+    
+    /**
+     * Return groups aggregations
+     * @return array
+     */
+    protected function getGroups() : array
+    {
+        $res = [];
+        foreach($this->groups as $alias => $group) {
+            $res[$alias] = $this->getGroup($group);
+        }
+        
+        return $res;
+    }
+    
+    /**
+     * Parse request and build aggregation
+     * @param type $group
+     * @return array
+     */
+    protected function getGroup($group) : array
+    {
+        $field = $group['field'] ?? '';
+        $res = $this->getTerms($field);
+        
+        $aggs = $group['aggs'] ?? [];
+        foreach($aggs as $alias => $field) {
+            if (is_numeric($alias)) {
+                $alias = $field;
+            }
+            $res['aggs'][$alias] = $this->getFilterByType('terms', [$field, $this->limit]);
+        }
+        
+        return $res;
     }
     
     /**
@@ -347,4 +458,40 @@ class QueryBuilder extends Builder
         return $client->indices()->delete($index);
 
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function groupBy(...$groups)
+    {
+        $cnt = count($groups);
+        if ($cnt == 1) {
+            return parent::groupBy($groups[0]);
+        }
+        
+        $group = '';
+        for($i=0; $i<$cnt; $i++) {
+            $data = $groups[$i];
+            if (is_string($data)) {
+                $group = $data;
+                $field = $this->groups[$group] ?? '';
+                if (!$field) {
+                    parent::groupBy([$group => $group]);
+                }
+            }
+            
+            if ($group && is_array($data)) {
+                $field = $this->groups[$group] ?? '';
+                $this->groups[$group] = [
+                    'field' => $field,
+                    'aggs' => $data,
+                ];
+                $group = '';
+            }
+        }
+        
+        return $this;
+        
+    }
+
 }

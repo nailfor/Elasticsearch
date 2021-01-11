@@ -39,7 +39,6 @@ class Builder extends EloquentBuilder
         
         return $this;
     }
-    
 
     /**
      * Print debug request
