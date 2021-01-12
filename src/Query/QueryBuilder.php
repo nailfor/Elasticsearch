@@ -297,6 +297,10 @@ class QueryBuilder extends Builder
     protected function getGroups() : array
     {
         $res = [];
+        if (!is_array($this->groups)) {
+            return $res;
+        }
+        
         foreach($this->groups as $alias => $group) {
             $res[$alias] = $this->getGroup($group);
         }
