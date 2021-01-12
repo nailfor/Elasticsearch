@@ -312,7 +312,7 @@ class QueryBuilder extends Builder
     protected function getGroup($group) : array
     {
         $field = $group['field'] ?? '';
-        $res = $this->getTerms($field);
+        $res = $this->getFilterByType('terms', [$field]);
         
         $aggs = $group['aggs'] ?? [];
         foreach($aggs as $alias => $field) {
