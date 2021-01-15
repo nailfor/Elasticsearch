@@ -3,6 +3,8 @@
 namespace nailfor\Elasticsearch\Query;
 
 use nailfor\Elasticsearch\Query\DSL\Filter;
+use nailfor\Elasticsearch\Query\DSL\existsFilter;
+
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Arr;
 
@@ -16,6 +18,8 @@ class QueryBuilder extends Builder
     protected $query;
     protected $count;
     protected $res;
+    protected $exists;
+    protected $ranges;
     
     /**
      * {@inheritdoc}
@@ -46,6 +50,11 @@ class QueryBuilder extends Builder
     public function setRawQuery($query)
     {
         $this->rawQuery = $query;
+    }
+    
+    public function whereFieldExists($field) 
+    {
+        $this->exists[] = $field;
     }
     
     /**
@@ -169,11 +178,15 @@ class QueryBuilder extends Builder
         }
         else {
             $bool['must'][] = $this->getMust();
-            $filter = $this->getFilter();
+            $filter = $this->getFilter('must');
             if ($filter) {
                 $bool['must'][] = $filter;
             }
-            
+            $filter = $this->getFilter('must_not');
+            if ($filter) {
+                $bool['must_not'][] = $filter;
+            }
+
             $body = [
                 'query' => [
                     'bool' => $bool,
@@ -181,6 +194,10 @@ class QueryBuilder extends Builder
             ];
             
             $groups = $this->getGroups();
+            if (is_array($this->ranges)) {
+                $groups = array_merge($groups, $this->ranges);
+            }
+            
             if ($groups) {
                 $body['aggs'] = $groups;
             }
@@ -238,14 +255,24 @@ class QueryBuilder extends Builder
      * Return filter params
      * @return array
      */
-    protected function getFilter() : array
+    protected function getFilter($mode = 'must') : array
     {
         $res = [];
         foreach($this->wheres ?? [] as $where) {
             $type = $where['type'];
-            $filter = $this->getFilterByType($type, $where, $res);
+            $operator = $where['operator'] ?? null;
+            if (($mode!='must' && $operator!='!=') || ($mode == 'must' && $operator=='!=')) {
+                continue;
+            }
+            $filter = $this->getFilterByType($type, $where);
             
             $res[] = $filter;
+        }
+        
+        if ($mode=='must' && $this->exists) {
+            foreach($this->exists as $exists) {
+                $res[] = $this->getFilterByType('exists', $exists);
+            }
         }
         
         return $res;
@@ -255,10 +282,9 @@ class QueryBuilder extends Builder
      * Return filter by name
      * @param type $type
      * @param type $params
-     * @param type $res
      * @return type
      */
-    protected function getFilterByType($type, $params, $res = []) 
+    protected function getFilterByType($type, $params) 
     {
         $namespace = __NAMESPACE__;
         $class = "$namespace\\DSL\\{$type}Filter";
@@ -266,7 +292,7 @@ class QueryBuilder extends Builder
         if (!class_exists($class)) {
             $class = Filter::class;
         }
-        $f = new $class($params, $res);
+        $f = new $class($params);
         
         return $f->getFilter();
     }
@@ -315,7 +341,7 @@ class QueryBuilder extends Builder
      */
     protected function getGroup($group) : array
     {
-        $field = $group['field'] ?? '';
+        $field = $group['field'] ?? $group;
         $res = $this->getFilterByType('terms', [$field]);
         
         $aggs = $group['aggs'] ?? [];
@@ -323,6 +349,7 @@ class QueryBuilder extends Builder
             if (is_numeric($alias)) {
                 $alias = $field;
             }
+
             $res['aggs'][$alias] = $this->getFilterByType('terms', [$field, $this->limit]);
         }
         
@@ -470,7 +497,11 @@ class QueryBuilder extends Builder
     {
         $cnt = count($groups);
         if ($cnt == 1) {
-            return parent::groupBy($groups[0]);
+            $group = $groups[0];
+            if (is_string($group)) {
+                $group = [$group => $group];
+            }
+            return parent::groupBy($group);
         }
         
         $group = '';
@@ -497,5 +528,32 @@ class QueryBuilder extends Builder
         return $this;
         
     }
+    
+    public function groupByRange($groups, $type = 'range')
+    {
+        $data = $groups[0] ?? '';
+        $params = $groups[1] ?? [];
+        
+        if (is_string($data)) {
+            $p = array_merge([
+                'field' => $data,
+            ], $params);
+            $this->ranges[$data] = $this->getFilterByType($type, $p);
+            
+            return;
+        }
 
+        if (!is_array($data)) {
+            return;
+        }
+        
+        foreach($data as $group=>$field) {
+            $p = array_merge([
+                'field' => $field,
+            ], $params);
+            $this->ranges[$group] = $this->getFilterByType($type, $p);
+        }
+        
+        return $this;
+    }
 }

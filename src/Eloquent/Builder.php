@@ -39,6 +39,27 @@ class Builder extends EloquentBuilder
         
         return $this;
     }
+    
+    public function whereFieldExists($field)
+    {
+        $this->query->whereFieldExists($field);
+        
+        return $this;
+    }    
+    
+    public function groupByRange(...$groups)
+    {
+        $this->query->groupByRange($groups);
+        
+        return $this;
+    }
+    
+    public function groupByInterval(...$groups)
+    {
+        $this->query->groupByRange($groups, 'interval');
+        
+        return $this;
+    }
 
     /**
      * Print debug request

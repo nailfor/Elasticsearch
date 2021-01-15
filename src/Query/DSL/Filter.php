@@ -6,12 +6,14 @@ class Filter
 {
     protected $column;
     protected $value;
+    protected $operator;
     protected $field = 'term';
     
     public function __construct($data)
     {
         $this->column   = $data['column'] ?? '';
         $this->value    = $data['value'] ?? '';
+        $this->operator = $data['operator'] ?? '=';
     }
     
     /**
