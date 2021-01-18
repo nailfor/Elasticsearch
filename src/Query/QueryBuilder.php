@@ -115,8 +115,9 @@ class QueryBuilder extends Builder
         foreach ($buckets as $item) {
             $itBucket = 0;
             foreach ($item as $key => $val) {
-                if (is_array($val) && $val['buckets']) {
-                    $bucket = $this->getBuckets($val, $key, [$agg => $item['key']]);
+                if (is_array($val) && ($val['buckets'] ?? 0)) {
+                    $app = array_merge($append, [$agg => $item['key']]);
+                    $bucket = $this->getBuckets($val, $key, $app);
                     $res = array_merge($res, $bucket);
                     $itBucket = 1;
                 }
@@ -129,8 +130,7 @@ class QueryBuilder extends Builder
                 ]);
             }
         }
-        
-        
+
         return $res;
     }
     
@@ -195,7 +195,19 @@ class QueryBuilder extends Builder
             
             $groups = $this->getGroups();
             if (is_array($this->ranges)) {
-                $groups = array_merge($groups, $this->ranges);
+                foreach($this->ranges as $key=>$val) {
+                    if ($groups[$key] ?? 0) {
+                        $ranges = array_merge($val, [
+                            'aggs' => [
+                                "{$key}_group" => $groups[$key],
+                           ],
+                        ]);
+                        $groups[$key] = $ranges;
+                    }
+                    else{
+                        $groups[$key] = $val;
+                    }
+                }
             }
             
             if ($groups) {
