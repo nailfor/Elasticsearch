@@ -62,8 +62,33 @@ class esSearch extends Model
 Example select
 ```
 esSearch::where('field', 'somedata')
-           ->whereBetween('@timestamp', [$startDate, $endDate])
-           ->get();
+    ->whereBetween('@timestamp', [$startDate, $endDate])
+    ->whereIn('data.field', [1,3,4])
+    ->whereFiledExist('some.field')
+    ->whereFiledNotExist('another.field')
+    ->get();
+```
+
+Example groups
+```
+esSearch::where('field.data', 'somedata')
+    //group name "group" by field "data.field" without subgroups
+    ->groupBy('group'=>'data.field') 
+
+    //group name "some_field" by field "some_field"
+    ->groupBy('some_field') 
+    //subgroup name "another" by field "another" and subgroup name "diff" and field "diff.name"
+    ->groupBy('some_field', ['another', 'diff'=>'field.diff']) 
+
+    //another style
+    ->groupBy(['grp'=>'field'], ['subgrp'=>'sub.field'])
+
+    //group "group" by 2 dates: before NOW-1Day and after. This is NOT filter, this is group by condition!
+    //all groups with name "group" will be merged
+    ->groupByRange(['group'=>'date.field'], ['ranges'=>['to' => 'now-1y/d', 'from' => 'now-1y/d']])
+
+    //group "date.field" by interval "hour"
+    ->groupByInterval(['graph'=>'date.field'], ['interval' => 'hour'])
 ```
 
 

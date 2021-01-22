@@ -19,6 +19,7 @@ class QueryBuilder extends Builder
     protected $count;
     protected $res;
     protected $exists;
+    protected $notExists;
     protected $ranges;
     
     /**
@@ -57,6 +58,11 @@ class QueryBuilder extends Builder
         $this->exists[] = $field;
     }
     
+    public function whereFieldNotExists($field) 
+    {
+        $this->notExists[] = $field;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -286,6 +292,12 @@ class QueryBuilder extends Builder
                 $res[] = $this->getFilterByType('exists', $exists);
             }
         }
+        if ($mode=='must_not' && $this->notExists) {
+            foreach($this->notExists as $exists) {
+                $res[] = $this->getFilterByType('exists', $exists);
+            }
+        }
+        
         
         return $res;
     }
@@ -354,7 +366,7 @@ class QueryBuilder extends Builder
     protected function getGroup($group) : array
     {
         $field = $group['field'] ?? $group;
-        $res = $this->getFilterByType('terms', [$field]);
+        $res = $this->getFilterByType('terms', [$field, $this->limit]);
         
         $aggs = $group['aggs'] ?? [];
         foreach($aggs as $alias => $field) {

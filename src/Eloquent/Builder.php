@@ -47,6 +47,14 @@ class Builder extends EloquentBuilder
         return $this;
     }    
     
+    public function whereFieldNotExists($field)
+    {
+        $this->query->whereFieldNotExists($field);
+        
+        return $this;
+    }    
+    
+    
     public function groupByRange(...$groups)
     {
         $this->query->groupByRange($groups);
