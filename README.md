@@ -89,6 +89,15 @@ esSearch::where('field.data', 'somedata')
 
     //group "date.field" by interval "hour"
     ->groupByInterval(['graph'=>'date.field'], ['interval' => 'hour'])
+
+    //group and calculate average value
+    ->groupBy(['groupName' => 'field_for_group']) 
+    ->groupByAverage('groupName', ['field' => 'field.name'])
+
+    //group and calculate sum
+    ->groupBy(['groupName' => 'field_for_group']) 
+    ->groupBySum('groupName', ['field' => 'field.name'])
+
 ```
 
 

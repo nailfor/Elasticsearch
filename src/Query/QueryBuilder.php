@@ -4,8 +4,14 @@ namespace nailfor\Elasticsearch\Query;
 
 use nailfor\Elasticsearch\Query\DSL\Filter;
 use nailfor\Elasticsearch\Query\DSL\existsFilter;
+use nailfor\Elasticsearch\ClassIterator;
+use nailfor\Elasticsearch\GetSetTrait;
+use nailfor\Elasticsearch\ModuleTrait;
 
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Grammars\Grammar;
+use Illuminate\Database\Query\Processors\Processor;
 use Illuminate\Support\Arr;
 
 /**
@@ -14,13 +20,16 @@ use Illuminate\Support\Arr;
  */
 class QueryBuilder extends Builder
 {
-    protected $rawQuery;
-    protected $query;
+    use GetSetTrait;
+    use ModuleTrait;
+    
     protected $count;
-    protected $res;
-    protected $exists;
-    protected $notExists;
-    protected $ranges;
+    
+    public function __construct(ConnectionInterface $connection, Grammar $grammar = null, Processor $processor = null)
+    {
+        $this->init(__DIR__.'/Modules', 'Module', $this);
+        return parent::__construct($connection, $grammar, $processor);
+    }
     
     /**
      * {@inheritdoc}
@@ -34,34 +43,6 @@ class QueryBuilder extends Builder
         
         return collect($res);
     }
-    
-    /**
-     * Set search query
-     * @param type $query
-     */
-    public function setQuery(string $query)
-    {
-        $this->query = $query;
-    }
-
-    /**
-     * Set raw query
-     * @param type $query
-     */
-    public function setRawQuery($query)
-    {
-        $this->rawQuery = $query;
-    }
-    
-    public function whereFieldExists($field) 
-    {
-        $this->exists[] = $field;
-    }
-    
-    public function whereFieldNotExists($field) 
-    {
-        $this->notExists[] = $field;
-    }
 
     /**
      * {@inheritdoc}
@@ -72,7 +53,6 @@ class QueryBuilder extends Builder
         $client = $this->connection->getClient();
 
         $res = $client->search($params);
-        $this->res = $res;
         $this->count = $res['hits']['total']['value'];
         
         $aggs = $res['aggregations'] ?? [];
@@ -116,12 +96,23 @@ class QueryBuilder extends Builder
      */
     protected function getBuckets($items, $agg, $append = []) : array
     {
+        $val = $items['value'] ?? 0;
+        if ($val)  {
+            return [
+                array_merge($append, [
+                    'count' => $val,
+                ]),
+            ];
+        }
+        
         $res = [];
         $buckets = $items['buckets'] ?? [];
         foreach ($buckets as $item) {
             $itBucket = 0;
             foreach ($item as $key => $val) {
-                if (is_array($val) && ($val['buckets'] ?? 0)) {
+                $bck = $val['buckets'] ?? 0;
+                $v = $val['value'] ?? 0;
+                if (is_array($val) && ($bck || $v)) {
                     $app = array_merge($append, [$agg => $item['key']]);
                     $bucket = $this->getBuckets($val, $key, $app);
                     $res = array_merge($res, $bucket);
@@ -179,57 +170,28 @@ class QueryBuilder extends Builder
      */
     public function getParams() : array
     {
-        if ($this->rawQuery) {
-            $body = $this->rawQuery;
-        }
-        else {
-            $bool['must'][] = $this->getMust();
-            $filter = $this->getFilter('must');
-            if ($filter) {
-                $bool['must'][] = $filter;
-            }
-            $filter = $this->getFilter('must_not');
-            if ($filter) {
-                $bool['must_not'][] = $filter;
-            }
-
+        $body = [];
+        $this->runModule('getBody', $body, '');
+        
+        if (!$body) {
+            $must = [];
+            $this->runModule('getMust', $must, '', true);
             $body = [
                 'query' => [
-                    'bool' => $bool,
+                    'bool' => [
+                        'must' => $must,
+                    ],
                 ],
             ];
             
-            $groups = $this->getGroups();
-            if (is_array($this->ranges)) {
-                foreach($this->ranges as $key=>$val) {
-                    if ($groups[$key] ?? 0) {
-                        $ranges = array_merge($val, [
-                            'aggs' => [
-                                "{$key}_group" => $groups[$key],
-                           ],
-                        ]);
-                        $groups[$key] = $ranges;
-                    }
-                    else{
-                        $groups[$key] = $val;
-                    }
-                }
-            }
-            
-            if ($groups) {
-                $body['aggs'] = $groups;
-            }
+            $this->runModule('getGroups', $body, 'aggs');
+            $this->runModule('getSort', $body, 'sort');
         }
         
         $params = [
             'index' => $this->from,
             'body' => $body,
         ];
-        
-        $sort = $this->getSort();
-        if ($sort) {
-            $params['body']['sort'] = $sort;
-        }
         
         if ($this->offset) {
             $params['from'] = $this->offset;
@@ -242,64 +204,25 @@ class QueryBuilder extends Builder
         return $params;
     }
     
-    /**
-     * Return must params
-     * @return array
-     */
-    protected function getMust() : array
-    {
-        $columns = $this->columns ? : ['*'];
-        $query = $this->query;
-
-        $res = [];
-        if ($query) {
-            $match = [
-                'fields'=> $columns,
-                'query' => $query,
-            ];
-            if ($this->columns) {
-                $match['operator'] = 'and';
-            }
-            $res['multi_match'] = $match;
-        }
-        else {
-            $res['match_all'] = (object)[];
-        }
-        
-        return $res;
-    }
-    
-    /**
-     * Return filter params
-     * @return array
-     */
-    protected function getFilter($mode = 'must') : array
+    protected function runModule($name, &$body, $field, $add = false) 
     {
         $res = [];
-        foreach($this->wheres ?? [] as $where) {
-            $type = $where['type'];
-            $operator = $where['operator'] ?? null;
-            if (($mode!='must' && $operator!='!=') || ($mode == 'must' && $operator=='!=')) {
-                continue;
-            }
-            $filter = $this->getFilterByType($type, $where);
-            
-            $res[] = $filter;
-        }
-        
-        if ($mode=='must' && $this->exists) {
-            foreach($this->exists as $exists) {
-                $res[] = $this->getFilterByType('exists', $exists);
-            }
-        }
-        if ($mode=='must_not' && $this->notExists) {
-            foreach($this->notExists as $exists) {
-                $res[] = $this->getFilterByType('exists', $exists);
+        $modules = $this->getModules($name);
+        foreach ($modules as $module) {
+            $res = $module->$name($res);
+            if ($add && $res) {
+                $body[] = $res;
             }
         }
         
-        
-        return $res;
+        if ($res  && !$add) {
+            if ($field) {
+                $body[$field] = $res;
+            }
+            else {
+                $body = $res;
+            }
+        }
     }
     
     /**
@@ -308,7 +231,7 @@ class QueryBuilder extends Builder
      * @param type $params
      * @return type
      */
-    protected function getFilterByType($type, $params) 
+    public function getFilterByType($type, $params) 
     {
         $namespace = __NAMESPACE__;
         $class = "$namespace\\DSL\\{$type}Filter";
@@ -319,65 +242,6 @@ class QueryBuilder extends Builder
         $f = new $class($params);
         
         return $f->getFilter();
-    }
-    
-    /**
-     * Return sort params
-     * @return array
-     */
-    protected function getSort() : array
-    {
-        $res = [];
-        foreach($this->orders ?? [] as $order) {
-            $column = $order['column'];
-            $res[] = [
-                $column => [
-                    'order' => $order['direction'],
-                ],
-            ];
-        }
-        
-        return $res; 
-    }
-    
-    /**
-     * Return groups aggregations
-     * @return array
-     */
-    protected function getGroups() : array
-    {
-        $res = [];
-        if (!is_array($this->groups)) {
-            return $res;
-        }
-        
-        foreach($this->groups as $alias => $group) {
-            $res[$alias] = $this->getGroup($group);
-        }
-        
-        return $res;
-    }
-    
-    /**
-     * Parse request and build aggregation
-     * @param type $group
-     * @return array
-     */
-    protected function getGroup($group) : array
-    {
-        $field = $group['field'] ?? $group;
-        $res = $this->getFilterByType('terms', [$field, $this->limit]);
-        
-        $aggs = $group['aggs'] ?? [];
-        foreach($aggs as $alias => $field) {
-            if (is_numeric($alias)) {
-                $alias = $field;
-            }
-
-            $res['aggs'][$alias] = $this->getFilterByType('terms', [$field, $this->limit]);
-        }
-        
-        return $res;
     }
     
     /**
@@ -483,38 +347,6 @@ class QueryBuilder extends Builder
     }
     
     /**
-     * Check exists index
-     * @return type
-     */
-    public function existsIndex()
-    {
-        $client = $this->connection->getClient();
-
-        $index = [
-            'index' => $this->from,
-            'type'  => '_doc',
-        ];
-        
-        return $client->indices()->existsType($index);
-    }
-
-    /**
-     * Drop index
-     * @return type
-     */
-    public function deleteIndex()
-    {
-        $client = $this->connection->getClient();
-        
-        $index = [
-            'index' => $this->from,
-        ];
-        
-        return $client->indices()->delete($index);
-
-    }
-    
-    /**
      * {@inheritdoc}
      */
     public function groupBy(...$groups)
@@ -553,31 +385,5 @@ class QueryBuilder extends Builder
         
     }
     
-    public function groupByRange($groups, $type = 'range')
-    {
-        $data = $groups[0] ?? '';
-        $params = $groups[1] ?? [];
-        
-        if (is_string($data)) {
-            $p = array_merge([
-                'field' => $data,
-            ], $params);
-            $this->ranges[$data] = $this->getFilterByType($type, $p);
-            
-            return;
-        }
 
-        if (!is_array($data)) {
-            return;
-        }
-        
-        foreach($data as $group=>$field) {
-            $p = array_merge([
-                'field' => $field,
-            ], $params);
-            $this->ranges[$group] = $this->getFilterByType($type, $p);
-        }
-        
-        return $this;
-    }
 }
