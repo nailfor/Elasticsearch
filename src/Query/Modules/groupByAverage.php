@@ -12,11 +12,15 @@ class groupByAverage extends groupByRange
             return $group;
         }
         
-        return array_merge($merge, [
-            'aggs' => [
-                "{$alias}_{$this->field}"    => $group,
-            ],
+        $aggs = $merge['aggs'] ?? [];
+        
+        $res = array_merge($aggs, [
+            "{$alias}_{$this->field}"    => $group,
         ]);
+                
+        $merge['aggs'] = $res;
+                
+        return $merge;
     }
 
 }
