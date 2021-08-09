@@ -16,8 +16,7 @@
     },
     "require": {
         "php": ">=7.1.0",
-        "elasticsearch/elasticsearch": "^7.0",
-        "nailfor/elasticsearch": "dev-master"
+        "elasticsearch/elasticsearch": "^7.0"
     },
     "minimum-stability": "dev"
 }
