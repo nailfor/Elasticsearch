@@ -5,7 +5,7 @@ class mustNotFilter extends Module
 {
     protected $skip = [
         null,
-        '==',
+        '=',
     ];
     
     /**
