@@ -174,13 +174,12 @@ class QueryBuilder extends Builder
         $this->runModule('getBody', $body, '');
         
         if (!$body) {
-            $must = [];
-            $this->runModule('getMust', $must, '', true);
+            $bool = [];
+            $this->runModule('getMust', $bool, 'must', true);
+            $this->runModule('getMustNot', $bool, 'mustNot', true);
             $body = [
                 'query' => [
-                    'bool' => [
-                        'must' => $must,
-                    ],
+                    'bool' => $bool,
                 ],
             ];
             
@@ -211,7 +210,12 @@ class QueryBuilder extends Builder
         foreach ($modules as $module) {
             $res = $module->$name($res);
             if ($add && $res) {
-                $body[] = $res;
+                if ($field) {
+                    $body[$field][] = $res;
+                }
+                else {
+                    $body[] = $res;
+                }
             }
         }
         
