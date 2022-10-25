@@ -16,7 +16,7 @@
     },
     "require": {
         "php": ">=7.1.0",
-        "elasticsearch/elasticsearch": "^7.0"
+        "elasticsearch/elasticsearch": "^8.4"
     },
     "minimum-stability": "dev"
 }

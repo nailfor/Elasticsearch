@@ -4,7 +4,7 @@ namespace nailfor\Elasticsearch;
 
 use nailfor\Elasticsearch\Query\QueryBuilder;
 
-use Elasticsearch\ClientBuilder;
+use Elastic\Elasticsearch\ClientBuilder;
 use Illuminate\Database\Connection as BaseConnection;
 
 class Connection extends BaseConnection
