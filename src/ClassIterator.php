@@ -18,7 +18,7 @@ class ClassIterator
     }
     
     /**
-     * Возвращает итератор файлов в текущем репозитарии
+     * Return file iterator in current folder
      */
     public function handle()
     {
