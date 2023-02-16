@@ -201,6 +201,13 @@ class QueryBuilder extends Builder
         return $params;
     }
     
+    /**
+     * Execute the Module DSL
+     * @param type $name
+     * @param type $body
+     * @param type $field
+     * @param type $add
+    */
     protected function runModule($name, &$body, $field, $add = false) 
     {
         $res = [];
@@ -384,8 +391,5 @@ class QueryBuilder extends Builder
         }
         
         return $this;
-        
     }
-    
-
 }
