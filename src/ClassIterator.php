@@ -9,7 +9,6 @@ class ClassIterator
         '..',
     ];
 
-
     public function __construct($folder, $skip = '')
     {
         $this->folder = $folder;
