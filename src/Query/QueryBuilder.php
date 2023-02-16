@@ -3,8 +3,6 @@
 namespace nailfor\Elasticsearch\Query;
 
 use nailfor\Elasticsearch\Query\DSL\Filter;
-use nailfor\Elasticsearch\Query\DSL\existsFilter;
-use nailfor\Elasticsearch\ClassIterator;
 use nailfor\Elasticsearch\GetSetTrait;
 use nailfor\Elasticsearch\ModuleTrait;
 
