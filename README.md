@@ -25,7 +25,7 @@ Usage
 Add config/app.php
 
 ```
-    'aliases' => [
+    'providers' => [
         ...
         nailfor\Elasticsearch\ElasticsearchServiceProvider::class,
 
