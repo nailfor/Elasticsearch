@@ -37,7 +37,13 @@ and config/database.php
         'elasticsearch' => [ //the name of connection in your models(default)
             'driver'    => 'elasticearch',
             'config'    => [
-                'hosts'     => [env('ELASTICSEARCH_HOST', 'localhost:9200'),],
+                'BasicAuthentication' => [
+                    env('ELASTICSEARCH_LOGIN', ''),
+                    env('ELASTICSEARCH_PASSWORD', ''),
+                ],
+                'hosts'     => [
+                    env('ELASTICSEARCH_HOST', 'localhost:9200'),
+                ],
                 'retries'   => 1,
             ],
         ],
