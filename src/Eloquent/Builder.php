@@ -4,7 +4,6 @@ namespace nailfor\Elasticsearch\Eloquent;
 
 use nailfor\Elasticsearch\Query\QueryBuilder as Query;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use nailfor\Elasticsearch\ClassIterator;
 use nailfor\Elasticsearch\ModuleTrait;
 /**
  * Elasticsearch
@@ -26,7 +25,7 @@ class Builder extends EloquentBuilder
      * @param int $replicas
      * @return type
      */
-    public function createIndex(int $shards = null, int $replicas = null) 
+    public function createIndex(int $shards = null, int $replicas = null)
     {
         $settings = $this->model->getIndexSettings();
         $mappings = $this->model->getMapping();

@@ -8,6 +8,6 @@ class queryModule extends Module
 {
     public function handle($fields)
     {
-        $this->query->setQuery($fields[0]);
-    }    
+        $this->query->setQuery($fields);
+    }
 }

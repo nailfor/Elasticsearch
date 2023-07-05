@@ -28,7 +28,6 @@ class Model extends BaseModel
         return new Builder($query);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -58,5 +57,4 @@ class Model extends BaseModel
     {
         return $this->mappingProperties ?? [];
     }
-    
 }

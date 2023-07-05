@@ -143,9 +143,7 @@ class QueryBuilder extends Builder
      */
     public function getCountForPagination($columns = ['*'])
     {
-        $results = $this->runPaginationCountQuery($columns);
-        
-        return $results;
+        return $this->runPaginationCountQuery($columns);
     }
     
     protected function runPaginationCountQuery($columns = ['*'])
@@ -160,7 +158,7 @@ class QueryBuilder extends Builder
         
         
         return $query->getCount();
-    }    
+    }
     
     /**
      * Return request params
@@ -201,14 +199,7 @@ class QueryBuilder extends Builder
         return $params;
     }
     
-    /**
-     * Execute the Module DSL
-     * @param type $name
-     * @param type $body
-     * @param type $field
-     * @param type $add
-    */
-    protected function runModule($name, &$body, $field, $add = false) 
+    protected function runModule($name, &$body, $field, $add = false)
     {
         $res = [];
         $modules = $this->getModules($name);
@@ -236,11 +227,11 @@ class QueryBuilder extends Builder
     
     /**
      * Return filter by name
-     * @param type $type
+     * @param string $type
      * @param type $params
      * @return type
      */
-    public function getFilterByType($type, $params) 
+    public function getFilterByType(string $type, $params)
     {
         $namespace = __NAMESPACE__;
         $class = "$namespace\\DSL\\{$type}Filter";
@@ -275,15 +266,15 @@ class QueryBuilder extends Builder
     
     /**
      * Create uniq key
-     * @param type $values
-     * @param type $sequence
-     * @return int
+     * @param array $values
+     * @param string $sequence
+     * @return string
      */
-    public function getElasticKey($values, $sequence)
+    public function getElasticKey(array $values, $sequence): string
     {
         $id = $values[$sequence] ?? 0;
         if (!$id) {
-            return 0;
+            return '';
         }
             
         return "{$this->from}_{$id}";
@@ -326,7 +317,7 @@ class QueryBuilder extends Builder
      * @param int $replicas
      * @return type
      */
-    public function createIndex(array $settings = [],array $mappingProperties = [], int $shards = null, int $replicas = null) 
+    public function createIndex(array $settings = [],array $mappingProperties = [], int $shards = null, int $replicas = null)
     {
         $client = $this->connection->getClient();
         
@@ -342,7 +333,7 @@ class QueryBuilder extends Builder
             $index['body']['mappings'] = [
                 'properties' => $mappingProperties,
             ];
-        }        
+        }
         
         if (!is_null($shards)) {
             $index['body']['settings']['number_of_shards'] = $shards;

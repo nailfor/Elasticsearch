@@ -20,6 +20,8 @@ class must extends Module
                 'fields'=> $columns ? : ['*'],
                 'query' => $query,
             ];
+            $match = array_merge($match, $this->builder->params ?? []);
+
             if ($columns) {
                 $match['operator'] = 'and';
             }

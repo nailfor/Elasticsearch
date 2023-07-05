@@ -27,7 +27,7 @@ class Module
             }
             $filter = $this->builder->getFilterByType($type, $where);
             
-            $res[] = $filter;
+            $res = array_merge($res, $filter);
         }
         
         return $res;

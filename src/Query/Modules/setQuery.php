@@ -3,8 +3,10 @@ namespace nailfor\Elasticsearch\Query\Modules;
 
 class setQuery extends Module
 {
-    public function handle($params)
+    public function handle(array $params)
     {
-        $this->builder->query = $params[0];
+        $params = reset($params);
+        $this->builder->query = array_shift($params);
+        $this->builder->params = $params[0] ?? null;
     }
 }
