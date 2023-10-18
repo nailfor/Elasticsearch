@@ -32,4 +32,14 @@ class Builder extends EloquentBuilder
         
         return $this->query->createIndex($settings, $mappings, $shards, $replicas);
     }
+
+    public function update(array $values)
+    {
+        $query = $this->query;
+        $att = $this->model->getAttributes();
+        $key = $this->model->getKeyName();
+        $values[$key] = $att[$key] ?? 0;
+        
+        return $query->update($values);
+    }    
 }

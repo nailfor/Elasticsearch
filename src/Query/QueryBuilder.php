@@ -182,12 +182,12 @@ class QueryBuilder extends Builder
             $this->runModule('getGroups', $body, 'aggs');
             $this->runModule('getSort', $body, 'sort');
         }
-        
+
         $params = [
             'index' => $this->from,
             'body' => $body,
         ];
-        
+
         if ($this->offset) {
             $params['from'] = $this->offset;
         }
@@ -199,7 +199,7 @@ class QueryBuilder extends Builder
         return $params;
     }
     
-    protected function runModule($name, &$body, $field, $add = false)
+    protected function runModule($name, &$body, $field, $add = false) 
     {
         $res = [];
         $modules = $this->getModules($name);
@@ -261,6 +261,31 @@ class QueryBuilder extends Builder
         }
         
         $res = $client->index($params);
+        return $res['_id'] ?? false;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function update(array $values)
+    {
+        $client = $this->connection->getClient();
+
+        $id = $values['_id'] ?? 0;
+        unset($values['_id']);
+        $params = [
+            'index' => $this->from,
+            'body' => [
+                'doc' => $values,
+            ],
+        ];
+        
+        if ($id) {
+            $params['id'] = $id;
+        }
+        
+        $res = $client->update($params);
+        
         return $res['_id'] ?? false;
     }
     

@@ -34,6 +34,9 @@ class Model extends BaseModel
     public function fromDateTime($value)
     {
         if ($this->dateFormat == 'U') {
+            if (!is_object($value)) {
+                return $value;
+            }
             return $value->timestamp;
         }
         
