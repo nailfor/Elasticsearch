@@ -8,8 +8,7 @@ class FilterFactory
 {
     public static function create(string $type, $params)
     {
-        $namespace = __NAMESPACE__;
-        $class = "$namespace\\DSL\\{$type}Filter";
+        $class = "nailfor\\Elasticsearch\\Query\\DSL\\{$type}Filter";
 
         if (!class_exists($class)) {
             $class = Filter::class;
