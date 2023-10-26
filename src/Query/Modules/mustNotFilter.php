@@ -3,7 +3,7 @@ namespace nailfor\Elasticsearch\Query\Modules;
 
 class mustNotFilter extends Module
 {
-    protected $skip = [
+    protected array $skip = [
         null,
         '=',
     ];
@@ -15,5 +15,5 @@ class mustNotFilter extends Module
     public function getMustNot() : array
     {
         return $this->getWhereFilter();
-    }    
+    }
 }

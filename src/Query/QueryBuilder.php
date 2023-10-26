@@ -2,7 +2,6 @@
 
 namespace nailfor\Elasticsearch\Query;
 
-use nailfor\Elasticsearch\Query\DSL\Filter;
 use nailfor\Elasticsearch\GetSetTrait;
 use nailfor\Elasticsearch\ModuleTrait;
 
@@ -22,10 +21,12 @@ class QueryBuilder extends Builder
     use ModuleTrait;
     
     protected $count;
+    protected $params;
     
     public function __construct(ConnectionInterface $connection, Grammar $grammar = null, Processor $processor = null)
     {
         $this->init(__DIR__.'/Modules', 'Module', $this);
+        
         return parent::__construct($connection, $grammar, $processor);
     }
     
@@ -71,7 +72,7 @@ class QueryBuilder extends Builder
     
     /**
      * Return linear array
-     * @param type $aggs
+     * @param array $aggs
      * @return array
      */
     protected function elasticAggregate($aggs) : array
@@ -87,9 +88,9 @@ class QueryBuilder extends Builder
     
     /**
      * Return bucket of loads
-     * @param type $items
-     * @param type $agg
-     * @param type $append
+     * @param array $items
+     * @param string $agg
+     * @param array $append
      * @return array
      */
     protected function getBuckets($items, $agg, $append = []) : array
@@ -131,7 +132,7 @@ class QueryBuilder extends Builder
     
     /**
      * Return count of records
-     * @return type
+     * @return int
      */
     protected function getCount()
     {
@@ -223,25 +224,6 @@ class QueryBuilder extends Builder
                 $body = $res;
             }
         }
-    }
-    
-    /**
-     * Return filter by name
-     * @param string $type
-     * @param type $params
-     * @return type
-     */
-    public function getFilterByType(string $type, $params)
-    {
-        $namespace = __NAMESPACE__;
-        $class = "$namespace\\DSL\\{$type}Filter";
-
-        if (!class_exists($class)) {
-            $class = Filter::class;
-        }
-        $f = new $class($params);
-        
-        return $f->getFilter();
     }
     
     /**
@@ -340,7 +322,7 @@ class QueryBuilder extends Builder
      * @param array $mappingProperties
      * @param int $shards
      * @param int $replicas
-     * @return type
+     * @return bool
      */
     public function createIndex(array $settings = [],array $mappingProperties = [], int $shards = null, int $replicas = null)
     {

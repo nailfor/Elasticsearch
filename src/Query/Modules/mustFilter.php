@@ -3,7 +3,7 @@ namespace nailfor\Elasticsearch\Query\Modules;
 
 class mustFilter extends Module
 {
-    protected $skip = [
+    protected array $skip = [
         '!=',
     ];
 

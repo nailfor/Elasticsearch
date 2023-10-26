@@ -1,6 +1,8 @@
 <?php
 namespace nailfor\Elasticsearch\Query\Modules;
 
+use nailfor\Elasticsearch\Factory\FilterFactory;
+
 class whereFieldExists extends Module
 {
     protected $field = 'exists';
@@ -22,7 +24,7 @@ class whereFieldExists extends Module
         $data = $this->builder->$field;
         if ($data) {
             foreach($data as $exists) {
-                $res[] = $this->builder->getFilterByType('exists', $exists);
+                $res[] = FilterFactory::create('exists', $exists);
             }
         }
         

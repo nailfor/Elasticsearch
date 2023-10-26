@@ -1,5 +1,6 @@
 <?php
 namespace nailfor\Elasticsearch\Query\Modules;
+use nailfor\Elasticsearch\Factory\FilterFactory;
 
 class groupByRange extends groupBy
 {
@@ -37,7 +38,7 @@ class groupByRange extends groupBy
         $fieldName = $this->field;
         
         $groups = $this->builder->$fieldName;
-        $groups[$group] = $this->builder->getFilterByType($this->type, $data);
+        $groups[$group] = FilterFactory::create($this->type, $data);
         $this->builder->$fieldName = $groups;
     }
 

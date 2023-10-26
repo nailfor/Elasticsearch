@@ -1,13 +1,16 @@
 <?php
 namespace nailfor\Elasticsearch\Query\Modules;
 
+use nailfor\Elasticsearch\Factory\FilterFactory;
+use nailfor\Elasticsearch\Query\QueryBuilder;
+
 class Module
 {
-    protected $builder;
-    protected $skip = [];
+    protected QueryBuilder $builder;
+    protected array $skip = [];
     
     
-    public function __construct($builder)
+    public function __construct(QueryBuilder $builder)
     {
         $this->builder = $builder;
     }
@@ -25,11 +28,11 @@ class Module
             if (in_array($operator, $this->skip)) {
                 continue;
             }
-            $filter = $this->builder->getFilterByType($type, $where);
+            $filter = FilterFactory::create($type, $where);
             
             $res = array_merge($res, $filter);
         }
         
         return $res;
-    }    
+    }
 }

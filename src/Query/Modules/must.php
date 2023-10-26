@@ -3,8 +3,6 @@ namespace nailfor\Elasticsearch\Query\Modules;
 
 class must extends Module
 {
-    protected $builder;
-
     /**
      * Return must params
      * @return array

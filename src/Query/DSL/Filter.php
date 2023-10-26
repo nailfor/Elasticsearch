@@ -35,7 +35,7 @@ class Filter
     
     /**
      * Return append for getFilter
-     * @return type
+     * @return array
      */
     protected function append()
     {
@@ -44,7 +44,7 @@ class Filter
     
     /**
      * Get value
-     * @return type
+     * @return mixed
      */
     protected function getValue()
     {

@@ -1,5 +1,6 @@
 <?php
 namespace nailfor\Elasticsearch\Query\Modules;
+use nailfor\Elasticsearch\Factory\FilterFactory;
 
 class groupBy extends Module
 {
@@ -26,13 +27,13 @@ class groupBy extends Module
     
     /**
      * Parse request and build aggregation
-     * @param type $group
+     * @param array $group
      * @return array
      */
     protected function getGroup($group, $alias, $merge) : array
     {
         $field = $group['field'] ?? $group;
-        $res = $this->builder->getFilterByType('terms', [$field, $this->builder->limit]);
+        $res = FilterFactory::create('terms', [$field, $this->builder->limit]);
         
         $aggs = $group['aggs'] ?? [];
         foreach($aggs as $alias => $field) {
@@ -40,9 +41,9 @@ class groupBy extends Module
                 $alias = $field;
             }
 
-            $res['aggs'][$alias] = $this->builder->getFilterByType('terms', [$field, $this->builder->limit]);
+            $res['aggs'][$alias] = FilterFactory::create('terms', [$field, $this->builder->limit]);
         }
         
         return $res;
-    }    
+    }
 }

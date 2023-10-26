@@ -3,7 +3,6 @@
 namespace nailfor\Elasticsearch\Eloquent;
 
 use Illuminate\Database\Eloquent\Model as BaseModel;
-use Illuminate\Support\Facades\Date;
 
 /**
  * Elasticsearch
@@ -19,6 +18,10 @@ class Model extends BaseModel
     protected $connection = 'elasticsearch';
     protected $dateFormat = 'U';
     protected $primaryKey = '_id';
+
+    protected $indexSettings;
+
+    protected $mappingProperties;
 
     /**
      * {@inheritdoc}

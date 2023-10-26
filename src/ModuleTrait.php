@@ -30,7 +30,7 @@ trait ModuleTrait
             
             
             $this->modules[$method] = new $class($param);
-        }        
+        }
     }
     
     protected function getModules($method)
