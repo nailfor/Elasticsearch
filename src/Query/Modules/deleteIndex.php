@@ -1,4 +1,5 @@
 <?php
+
 namespace nailfor\Elasticsearch\Query\Modules;
 
 /**
@@ -7,9 +8,9 @@ namespace nailfor\Elasticsearch\Query\Modules;
  */
 class deleteIndex extends Module
 {
-    public function handle($params)
+    public function handle()
     {
-        $client = $this->builder->connection->getClient();
+        $client = $this->getClient();
 
         $index = [
             'index' => $this->builder->from,

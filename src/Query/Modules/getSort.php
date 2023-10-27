@@ -1,4 +1,5 @@
 <?php
+
 namespace nailfor\Elasticsearch\Query\Modules;
 
 class getSort extends Module
@@ -19,6 +20,6 @@ class getSort extends Module
             ];
         }
         
-        return $res; 
+        return $res;
     }
 }

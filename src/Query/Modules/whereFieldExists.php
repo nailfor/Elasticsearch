@@ -1,4 +1,5 @@
 <?php
+
 namespace nailfor\Elasticsearch\Query\Modules;
 
 use nailfor\Elasticsearch\Factory\FilterFactory;
@@ -15,6 +16,8 @@ class whereFieldExists extends Module
         
         $data[] = $params[0];
         $this->builder->$field = $data;
+
+        return $this->builder;
     }
     
     public function getMust() : array

@@ -1,4 +1,5 @@
 <?php
+
 namespace nailfor\Elasticsearch\Query\Modules;
 
 /**
@@ -9,7 +10,7 @@ class existsIndex extends Module
 {
     public function handle($params)
     {
-        $client = $this->builder->connection->getClient();
+        $client = $this->getClient();
 
         $index = [
             'index' => $this->builder->from,

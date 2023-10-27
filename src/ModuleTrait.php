@@ -9,12 +9,7 @@ trait ModuleTrait
     {
         $module = $this->modules[$method] ?? '';
         if ($module && method_exists($module, 'handle')) {
-            $res = $module->handle($parameters);
-            if ($res) {
-                return $res;
-            }
-            
-            return $this;
+            return $module->handle($parameters);
         }
         
         return parent::__call($method, $parameters);

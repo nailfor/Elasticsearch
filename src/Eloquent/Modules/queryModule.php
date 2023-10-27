@@ -1,4 +1,5 @@
 <?php
+
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
 /**
@@ -9,5 +10,7 @@ class queryModule extends Module
     public function handle($fields)
     {
         $this->query->setQuery($fields);
+
+        return $this->query;
     }
 }

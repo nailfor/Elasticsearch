@@ -2,11 +2,14 @@
 
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
-class whereFieldNotExistsModule extends Module
+/**
+ * Set search query
+ */
+class suggestModule extends Module
 {
     public function handle($fields)
     {
-        $this->query->whereFieldNotExists($fields[0]);
+        $this->query->suggest($fields);
 
         return $this->query;
     }

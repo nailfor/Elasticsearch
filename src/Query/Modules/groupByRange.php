@@ -1,5 +1,7 @@
 <?php
+
 namespace nailfor\Elasticsearch\Query\Modules;
+
 use nailfor\Elasticsearch\Factory\FilterFactory;
 
 class groupByRange extends groupBy
@@ -21,12 +23,14 @@ class groupByRange extends groupBy
         }
 
         if (!is_array($data)) {
-            return;
+            return $this->builder;
         }
         
         foreach($data as $group=>$field) {
             $this->setField($group, $field, $params);
         }
+
+        return $this->builder;
     }
     
     protected function setField($group, $field, $params)
