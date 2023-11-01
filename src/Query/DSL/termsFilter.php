@@ -28,5 +28,4 @@ class termsFilter extends Filter
             'size' => $this->limit,
         ];
     }
-    
 }

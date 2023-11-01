@@ -5,11 +5,11 @@ namespace nailfor\Elasticsearch\Eloquent\Modules;
 /**
  * Set search query
  */
-class suggestModule extends Module
+class scrollModule extends Module
 {
-    public function handle($fields)
+    public function handle($params)
     {
-        $this->query->suggest($fields);
+        $this->query->scroll($params[0] ?? null);
 
         return $this->builder;
     }

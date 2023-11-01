@@ -8,6 +8,6 @@ class whereFieldNotExistsModule extends Module
     {
         $this->query->whereFieldNotExists($fields[0]);
 
-        return $this->query;
+        return $this->builder;
     }
 }

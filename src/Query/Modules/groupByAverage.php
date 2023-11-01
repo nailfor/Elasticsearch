@@ -1,10 +1,11 @@
 <?php
+
 namespace nailfor\Elasticsearch\Query\Modules;
 
 class groupByAverage extends groupByRange
 {
-    protected $field = 'average';
-    protected $type = 'average';
+    protected string $field = 'average';
+    protected string $type = 'average';
     
     protected function getGroup($group, $alias, $merge) : array
     {
@@ -22,5 +23,4 @@ class groupByAverage extends groupByRange
                 
         return $merge;
     }
-
 }

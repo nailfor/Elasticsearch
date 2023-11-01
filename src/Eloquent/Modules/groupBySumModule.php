@@ -8,6 +8,6 @@ class groupBySumModule extends Module
     {
         $this->query->groupBySum($fields);
 
-        return $this->query;
+        return $this->builder;
     }
 }

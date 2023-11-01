@@ -8,6 +8,6 @@ class groupByAverageModule extends Module
     {
         $this->query->groupByAverage($fields);
 
-        return $this->query;
+        return $this->builder;
     }
 }

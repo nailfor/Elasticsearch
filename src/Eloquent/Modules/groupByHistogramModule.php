@@ -8,6 +8,6 @@ class groupByHistogramModule extends Module
     {
         $this->query->groupByHistogram($fields);
 
-        return $this->query;
+        return $this->builder;
     }
 }

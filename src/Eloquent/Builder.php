@@ -2,7 +2,7 @@
 
 namespace nailfor\Elasticsearch\Eloquent;
 
-use nailfor\Elasticsearch\Query\QueryBuilder as Query;
+use nailfor\Elasticsearch\Query\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use nailfor\Elasticsearch\ModuleTrait;
 /**
@@ -13,10 +13,13 @@ class Builder extends EloquentBuilder
 {
     use ModuleTrait;
     
-    public function __construct(Query $query)
+    public function __construct(QueryBuilder $query)
     {
         $this->query = $query;
-        $this->init(__DIR__.'/Modules', 'Module', $query);
+        $this->init(__DIR__.'/Modules', 'Module', [
+            'query' => $query,
+            'builder' => $this,
+        ]);
     }
     
     /**
@@ -41,5 +44,5 @@ class Builder extends EloquentBuilder
         $values[$key] = $att[$key] ?? 0;
         
         return $query->update($values);
-    }    
+    }
 }

@@ -28,5 +28,5 @@ class deletePlugin extends Module
         ];
         
         return $client->delete($params);
-    }
+    }    
 }

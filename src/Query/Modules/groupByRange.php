@@ -1,13 +1,11 @@
 <?php
-
 namespace nailfor\Elasticsearch\Query\Modules;
-
 use nailfor\Elasticsearch\Factory\FilterFactory;
 
 class groupByRange extends groupBy
 {
-    protected $field = 'ranges';
-    protected $type = 'range';
+    protected string $field = 'ranges';
+    protected string $type = 'range';
     
     public function handle($params)
     {
@@ -58,5 +56,4 @@ class groupByRange extends groupBy
            ],
         ]);
     }
-    
 }

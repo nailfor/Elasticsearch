@@ -25,8 +25,6 @@ class QueryBuilder extends Builder
     
     protected $count;
 
-    protected $params;
-    
     public function __construct(ConnectionInterface $connection, Grammar $grammar = null, Processor $processor = null)
     {
         $this->init(__DIR__.'/Modules', 'Module', $this);
@@ -52,6 +50,13 @@ class QueryBuilder extends Builder
      */
     protected function runSelect()
     {
+        $scrollModule = $this->modules['scroll'];
+        $scroll = $scrollModule->getScroll();
+
+        if ($scroll['scroll_id'] ?? 0) {
+            return $scrollModule->scroll($scroll);
+        }
+
         $params = $this->getParams();
         $client = $this->connection->getClient();
 
@@ -63,17 +68,16 @@ class QueryBuilder extends Builder
             return $this->aggregatePlugin($aggs);
         }
         
-        $hits = $res['hits']['hits'] ?? [];
-        
-        $items = array_map(function ($item) {
-            $res = $item['_source'];
-            $res['_id'] = $item['_id'];
-            return $res;
-        }, $hits);
-
+        $items = $this->hitsPlugin($res);
         $suggest = $this->suggestPlugin($res);
         if (is_array($suggest)) {
             $items = array_merge($items, $suggest);
+        }
+
+        $scroll_id = $res['_scroll_id'] ?? 0;
+        if ($scroll_id) {
+            $scroll['scroll_id'] = $scroll_id;
+            $this->scroll($scroll);
         }
         
         return $items;
@@ -117,7 +121,7 @@ class QueryBuilder extends Builder
     {
         $body = [];
         $this->runModule('getBody', $body, '');
-        
+
         if (!$body) {
             $bool = [];
             $this->runModule('getMust', $bool, 'must', true);
@@ -138,6 +142,8 @@ class QueryBuilder extends Builder
             'body' => $body,
         ];
 
+        $this->runModule('getScroll', $params, 'scroll');
+
         if ($this->offset) {
             $params['from'] = $this->offset;
         }
@@ -157,7 +163,7 @@ class QueryBuilder extends Builder
             $res = $module->$name($res);
             if ($add && $res) {
                 if ($field) {
-                    $body[$field][] = $res;
+                    $body[$field] = array_merge($body[$field] ?? [], $res);
                 }
                 else {
                     $body[] = $res;

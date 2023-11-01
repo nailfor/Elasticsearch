@@ -16,13 +16,12 @@ class histogramFilter extends Filter
     
     /**
      * Return append for getFilter
-     * @return type
      */
     protected function append()
     {
         return [
             'interval' => $this->interval,
         ];
-    }    
+    }
    
 }

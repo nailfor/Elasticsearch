@@ -3,6 +3,17 @@ namespace nailfor\Elasticsearch\Query\Modules;
 
 class must extends Module
 {
+    protected array $params = [];
+
+    public function handle(array $params)
+    {
+        $params = reset($params);
+        $this->builder->query = array_shift($params);
+        $this->params = $params[0] ?? [];
+
+        return $this->builder;
+    }
+
     /**
      * Return must params
      * @return array
@@ -18,7 +29,7 @@ class must extends Module
                 'fields'=> $columns ? : ['*'],
                 'query' => $query,
             ];
-            $match = array_merge($match, $this->builder->params ?? []);
+            $match = array_merge($match, $this->params);
 
             if ($columns) {
                 $match['operator'] = 'and';
@@ -29,6 +40,6 @@ class must extends Module
             $res['match_all'] = (object)[];
         }
         
-        return $res;
+        return [$res];
     }
 }

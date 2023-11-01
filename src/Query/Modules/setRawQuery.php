@@ -1,5 +1,4 @@
 <?php
-
 namespace nailfor\Elasticsearch\Query\Modules;
 
 class setRawQuery extends Module

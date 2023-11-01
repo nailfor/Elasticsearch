@@ -8,6 +8,6 @@ class groupByRangeModule extends Module
     {
         $this->query->groupByRange($fields);
 
-        return $this->query;
+        return $this->builder;
     }
 }

@@ -1,17 +1,21 @@
 <?php
+
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
-use nailfor\Elasticsearch\Query\QueryBuilder as Query;
+use nailfor\Elasticsearch\Eloquent\Builder;
+use nailfor\Elasticsearch\Query\QueryBuilder;
 
 abstract class Module 
 {
-    protected $query;
+    protected QueryBuilder $query;
+
+    protected Builder $builder;
     
-    public function __construct(Query $query)
+    public function __construct(array $params)
     {
-        $this->query = $query;
-    }    
+        $this->query = $params['query'];
+        $this->builder = $params['builder'];
+    }
     
     abstract public function handle($fields);
-
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace nailfor\Elasticsearch\Query\Modules;
 
 use Elastic\Elasticsearch\Client;
@@ -26,7 +25,7 @@ class Module
      * Return where params
      * @return array
      */
-    protected function getWhereFilter($wheres = []) : array
+    protected function getWhereFilter($wheres = null) : array
     {
         $res = [];
         $wheres = $wheres ?? $this->builder->wheres;
@@ -36,9 +35,8 @@ class Module
             if (in_array($operator, $this->skip)) {
                 continue;
             }
-            $filter = $this->getFilter($type, $where);
             
-            $res = array_merge($res, $filter);
+            $res[] = $this->getFilter($type, $where);
         }
         
         return $res;

@@ -8,6 +8,6 @@ class whereFieldExistsModule extends Module
     {
         $this->query->whereFieldExists($fields[0]);
 
-        return $this->query;
+        return $this->builder;
     }
 }

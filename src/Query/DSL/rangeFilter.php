@@ -18,7 +18,7 @@ class rangeFilter extends Filter
     
     /**
      * Return append for getFilter
-     * @return type
+     * @return array
      */
     protected function append()
     {
@@ -26,5 +26,5 @@ class rangeFilter extends Filter
             'format' => $this->format,
             'ranges' => $this->ranges,
         ];
-    }    
+    }
 }

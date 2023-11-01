@@ -11,6 +11,6 @@ class rawQueryModule extends Module
     {
         $this->query->setRawQuery($fields[0]);
 
-        return $this->query;
+        return $this->builder;
     }
 }

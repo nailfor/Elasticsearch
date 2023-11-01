@@ -18,7 +18,7 @@ class intervalFilter extends Filter
     
     /**
      * Return append for getFilter
-     * @return type
+     * @return array
      */
     protected function append()
     {
@@ -26,5 +26,5 @@ class intervalFilter extends Filter
             'interval' => $this->interval,
             'time_zone' => $this->zone,
         ];
-    }    
+    }
 }

@@ -4,7 +4,7 @@ use nailfor\Elasticsearch\Factory\FilterFactory;
 
 class groupBy extends Module
 {
-    protected $field = 'groups';
+    protected string $field = 'groups';
     
     /**
      * Return groups aggregations

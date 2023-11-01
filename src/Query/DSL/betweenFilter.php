@@ -19,7 +19,7 @@ class betweenFilter extends Filter
     }
     
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function getValue()
     {
@@ -29,5 +29,4 @@ class betweenFilter extends Filter
             'lte' => $this->to,
         ];
     }
-    
 }

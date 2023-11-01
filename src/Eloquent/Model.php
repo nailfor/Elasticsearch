@@ -19,12 +19,8 @@ class Model extends BaseModel
     protected $dateFormat = 'U';
     protected $primaryKey = '_id';
 
-    protected $indexSettings;
-
-    protected $mappingProperties;
-
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function newEloquentBuilder($query)
     {
@@ -32,7 +28,7 @@ class Model extends BaseModel
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function fromDateTime($value)
     {
@@ -62,5 +58,13 @@ class Model extends BaseModel
     public function getMapping() : array
     {
         return $this->mappingProperties ?? [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function qualifyColumn($column)
+    {
+        return $column;
     }
 }

@@ -9,8 +9,8 @@ class queryModule extends Module
 {
     public function handle($fields)
     {
-        $this->query->setQuery($fields);
+        $this->query->must($fields);
 
-        return $this->query;
+        return $this->builder;
     }
 }

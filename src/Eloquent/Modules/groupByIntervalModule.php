@@ -8,6 +8,6 @@ class groupByIntervalModule extends Module
     {
         $this->query->groupByInterval($fields);
 
-        return $this->query;
+        return $this->builder;
     }
 }
