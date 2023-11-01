@@ -6,7 +6,8 @@ class aggregatePlugin extends Module
 {
     public function handle(array $params): array
     {
-        $aggs = $params[0] ?? [];
+        $response = $params[0] ?? [];
+        $aggs = $response['aggregations'] ?? [];
         $res = [];
         foreach($aggs as $agg => $items) {
             $item = $this->getBuckets($items, $agg);
@@ -25,6 +26,7 @@ class aggregatePlugin extends Module
      */
     protected function getBuckets($items, $agg, $append = []) : array
     {
+        $append['__aggregate_name'] = $agg;
         $val = $items['value'] ?? 0;
         if ($val)  {
             return [

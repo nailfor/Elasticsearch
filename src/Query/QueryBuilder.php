@@ -10,6 +10,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Processors\Processor;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 /**
  * Elasticsearch
@@ -42,7 +43,7 @@ class QueryBuilder extends Builder
             return $this->processor->processSelect($this, $items);
         });
         
-        return collect($res);
+        return new Collection($res);
     }
 
     /**
@@ -63,12 +64,11 @@ class QueryBuilder extends Builder
         $res = $client->search($params);
         $this->count = $res['hits']['total']['value'];
         
-        $aggs = $res['aggregations'] ?? [];
-        if ($aggs) {
-            return $this->aggregatePlugin($aggs);
-        }
-        
         $items = $this->hitsPlugin($res);
+        $aggregate = $this->aggregatePlugin($res);
+        if (is_array($aggregate)) {
+            $items = array_merge($items, $aggregate);
+        }
         $suggest = $this->suggestPlugin($res);
         if (is_array($suggest)) {
             $items = array_merge($items, $suggest);

@@ -75,6 +75,9 @@ esSearch::where('field', 'somedata')
     ->get();
 ```
 
+!!!ATTENTION!!!
+After v0.17.0 groups returns the query result!
+
 Example groups
 ```
 esSearch::where('field.data', 'somedata')
@@ -89,9 +92,12 @@ esSearch::where('field.data', 'somedata')
     //another style
     ->groupBy(['grp'=>'field'], ['subgrp'=>'sub.field'])
 
+    //group field "price" by 3 group: <1000, 1000-2000 and >2000
+    ->groupByRange('price', ['ranges'=>[['to' => '1000'], ['from' => '1000', 'to' => 2000], ['from'=>2000]])
+
     //group "group" by 2 dates: before NOW-1Day and after. This is NOT filter, this is group by condition!
     //all groups with name "group" will be merged
-    ->groupByRange(['group'=>'date.field'], ['ranges'=>['to' => 'now-1y/d', 'from' => 'now-1y/d']])
+    ->groupByDateRange(['group'=>'date.field'], ['ranges'=>['to' => 'now-1y/d', 'from' => 'now-1y/d']])
 
     //group "date.field" by interval "hour"
     ->groupByInterval(['graph'=>'date.field'], ['interval' => 'hour'])
@@ -104,6 +110,65 @@ esSearch::where('field.data', 'somedata')
     ->groupBy(['groupName' => 'field_for_group']) 
     ->groupBySum('groupName', ['field' => 'field.name'])
 
+esSearch::where('field.data', 'somedata')
+    //group name "group" by field "data.field" without subgroups with limit 10 items
+    ->groupBy('group'=>'data.field')
+    ->limit(10)
+
+```
+
+
+Example fuzziness
+```
+$query = esSearch::query($searchString, [
+    'fuzziness' => 1,
+]);
+$collection = $query->get();
+```
+
+Example scroll API
+```
+$query = esSearch::scroll([
+        'scroll' => '1m',
+    ]);
+$collection = $query->get(); //first 10k(max) records
+$collection = $query->get(); //next 10k(max) records...
+```
+or
+```
+esSearch::scroll([
+        'scroll' => '1m',
+    ])
+    ->chunk(1000, function ($collection) {
+        ...
+    });
+```
+
+Example suggest request
+```
+//clear
+esSeartch::where('model', 'short')
+    ->suggest('my-suggest')
+    ->get();
+
+//closure
+esSeartch::suggest('my-clossure', fn ($query) => $query->where('color', 'black'))
+    ->get();
+
+//mix
+$query = esSeartch::select([
+        'brand',
+        'name',
+    ])
+    ->query($searchString, [
+        'minimum_should_match'=> '50%',
+        'fuzziness' => 'auto',
+    ])
+    ->suggest('my-1', fn ($query) => $query->where('size', 'xxl'))
+    ->suggest('my-2', fn ($query) => $query->where('color', 'black'))
+    ->suggest('my-3') //do nothing because there no "where" section
+    ;
+$collection = $query->get();
 ```
 
 

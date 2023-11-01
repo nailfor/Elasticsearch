@@ -46,14 +46,6 @@ class groupByRange extends groupBy
 
     protected function getGroup($group, $alias, $merge) : array
     {
-        if (!$merge) {
-            return $group;
-        }
-        
-        return array_merge($group, [
-            'aggs' => [
-                "{$alias}_group" => $merge,
-           ],
-        ]);
+        return $group;
     }
 }
