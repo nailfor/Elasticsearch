@@ -1,4 +1,5 @@
 <?php
+
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
 /**
@@ -12,11 +13,10 @@ class ddModule extends Module
         $toJson = $fields[0] ?? 0;
         
         if ($toJson) {
-            header('Content-Type: application/json');
             echo json_encode($params, JSON_PRETTY_PRINT);
             exit;
         }
         
         dd($params);
-    }    
+    }
 }
