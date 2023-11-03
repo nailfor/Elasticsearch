@@ -5,11 +5,11 @@ namespace nailfor\Elasticsearch\Eloquent\Modules;
 /**
  * Set search query
  */
-class queryModule extends Module
+class nestedModule extends Module
 {
     public function handle($fields)
     {
-        $this->query->must(...$fields);
+        $this->query->nested(...$fields);
 
         return $this->builder;
     }

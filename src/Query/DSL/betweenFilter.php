@@ -14,8 +14,8 @@ class betweenFilter extends Filter
         
         $val = $data['values'] ?? [];
         
-        $this->from = $val[0] ?? 0;
-        $this->to = $val[1] ?? 0;
+        $this->from = $val[0] ?? null;
+        $this->to = $val[1] ?? null;
     }
     
     /**
@@ -23,10 +23,14 @@ class betweenFilter extends Filter
      */
     protected function getValue()
     {
-        return [
-            //'format' => 'strict_date_optional_time',
-            'gte' => $this->from,
-            'lte' => $this->to,
-        ];
+        $result = [];
+        if ($this->from) {
+            $result['gte'] = $this->from;
+        }
+        if ($this->to) {
+            $result['lte'] = $this->to;
+        }
+
+        return $result;
     }
 }

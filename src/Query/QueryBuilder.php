@@ -123,13 +123,11 @@ class QueryBuilder extends Builder
         $this->runModule('getBody', $body, '');
 
         if (!$body) {
-            $bool = [];
-            $this->runModule('getMust', $bool, 'must', true);
-            $this->runModule('getMustNot', $bool, 'mustNot', true);
+            $query = [];
+            $this->runModule('getQueryBody', $query, '', true);
+
             $body = [
-                'query' => [
-                    'bool' => $bool,
-                ],
+                'query' => reset($query),
             ];
             
             $this->runModule('getSuggest', $body, 'suggest');
@@ -153,6 +151,15 @@ class QueryBuilder extends Builder
         }
         
         return $params;
+    }
+
+    public function getBool(): array
+    {
+        $bool = [];
+        $this->runModule('getMust', $bool, 'must', true);
+        $this->runModule('getMustNot', $bool, 'mustNot', true);
+
+        return $bool;
     }
 
     protected function runModule($name, &$body, $field, $add = false) 

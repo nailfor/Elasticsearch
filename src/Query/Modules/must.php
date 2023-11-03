@@ -7,7 +7,6 @@ class must extends Module
 
     public function handle(array $params)
     {
-        $params = reset($params);
         $this->builder->query = array_shift($params);
         $this->params = $params[0] ?? [];
 

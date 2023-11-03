@@ -82,12 +82,12 @@ Example groups
 ```
 esSearch::where('field.data', 'somedata')
     //group name "group" by field "data.field" without subgroups
-    ->groupBy('group'=>'data.field') 
+    ->groupBy('group'=>'data.field')
 
     //group name "some_field" by field "some_field"
-    ->groupBy('some_field') 
+    ->groupBy('some_field')
     //subgroup name "another" by field "another" and subgroup name "diff" and field "diff.name"
-    ->groupBy('some_field', ['another', 'diff'=>'field.diff']) 
+    ->groupBy('some_field', ['another', 'diff'=>'field.diff'])
 
     //another style
     ->groupBy(['grp'=>'field'], ['subgrp'=>'sub.field'])
@@ -103,11 +103,11 @@ esSearch::where('field.data', 'somedata')
     ->groupByInterval(['graph'=>'date.field'], ['interval' => 'hour'])
 
     //group and calculate average value
-    ->groupBy(['groupName' => 'field_for_group']) 
+    ->groupBy(['groupName' => 'field_for_group'])
     ->groupByAverage('groupName', ['field' => 'field.name'])
 
     //group and calculate sum
-    ->groupBy(['groupName' => 'field_for_group']) 
+    ->groupBy(['groupName' => 'field_for_group'])
     ->groupBySum('groupName', ['field' => 'field.name'])
 
 esSearch::where('field.data', 'somedata')
