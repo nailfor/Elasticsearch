@@ -171,6 +171,12 @@ $query = esSeartch::select([
 $collection = $query->get();
 ```
 
+Example nested request
+```
+$query = esSeartch::select([])
+    ->where('category.id', 2)
+    ->nested('category')  //Currently only simple query is supported
+```
 
 Credits
 -------

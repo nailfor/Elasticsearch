@@ -28,7 +28,7 @@ class suggest extends Module
         }
 
         if ($filter) {
-            $this->suggest[$name] = $filter;
+            $this->suggest[$name] = $filter[0] ?? [];
         }
 
         return $this->builder;
@@ -36,7 +36,11 @@ class suggest extends Module
 
     public function newEloquentQuery()
     {
-        return new Builder(clone $this->builder);
+        $builder = new Builder($this->builder);
+        $query = $this->builder->connection->query();
+        $builder->setQuery($query);
+
+        return $builder;
     }
 
     protected function getFilter($type, $where) : array
