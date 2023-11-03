@@ -45,4 +45,17 @@ class Builder extends EloquentBuilder
         
         return $query->update($values);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function clone()
+    {
+        $builder    = $this->getQuery();
+        $newBuilder = $builder->connection->query();
+        $queryClone = clone $this;
+        $queryClone->setQuery($newBuilder);
+        
+        return $queryClone;
+    }
 }
