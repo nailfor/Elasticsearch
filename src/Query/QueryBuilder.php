@@ -23,8 +23,8 @@ class QueryBuilder extends Builder
 
     /** @var nailfor\Elasticsearch\Connection $connection */
     public $connection;
-    
-    protected $count;
+
+        protected $count;
 
     public function __construct(ConnectionInterface $connection, Grammar $grammar = null, Processor $processor = null)
     {
@@ -224,12 +224,7 @@ class QueryBuilder extends Builder
      */
     public function getElasticKey(array $values, $sequence): string
     {
-        $id = $values[$sequence] ?? 0;
-        if (!$id) {
-            return '';
-        }
-            
-        return "{$this->from}_{$id}";
+        return $values[$sequence] ?? '';
     }
     
     /**
