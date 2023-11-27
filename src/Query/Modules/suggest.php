@@ -2,7 +2,6 @@
 
 namespace nailfor\Elasticsearch\Query\Modules;
 
-use nailfor\Elasticsearch\Eloquent\Builder;
 use nailfor\Elasticsearch\Factory\FilterFactory;
 
 class suggest extends Module
@@ -32,15 +31,6 @@ class suggest extends Module
         }
 
         return $this->builder;
-    }
-
-    public function newEloquentQuery()
-    {
-        $builder = new Builder($this->builder);
-        $query = $this->builder->connection->query();
-        $builder->setQuery($query);
-
-        return $builder;
     }
 
     protected function getFilter($type, $where) : array

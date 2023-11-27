@@ -13,7 +13,7 @@ class ddModule extends Module
         $toJson = $fields[0] ?? 0;
         
         if ($toJson) {
-                        echo json_encode($params, JSON_PRETTY_PRINT);
+            echo json_encode($params, JSON_PRETTY_PRINT);
             exit;
         }
         

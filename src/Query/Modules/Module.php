@@ -2,6 +2,7 @@
 namespace nailfor\Elasticsearch\Query\Modules;
 
 use Elastic\Elasticsearch\Client;
+use nailfor\Elasticsearch\Eloquent\Builder;
 use nailfor\Elasticsearch\Factory\FilterFactory;
 use nailfor\Elasticsearch\Query\QueryBuilder;
 
@@ -14,6 +15,13 @@ class Module
     public function __construct(QueryBuilder $builder)
     {
         $this->builder = $builder;
+    }
+
+    public function newEloquentQuery()
+    {
+        $queryBuilder = $this->builder->connection->query();
+
+        return new Builder($queryBuilder);
     }
 
     protected function getClient(): Client

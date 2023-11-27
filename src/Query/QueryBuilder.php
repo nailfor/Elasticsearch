@@ -119,6 +119,26 @@ class QueryBuilder extends Builder
      */
     public function getParams() : array
     {
+        $params = [
+            'index' => $this->from,
+            'body' => $this->getBody(),
+        ];
+
+        $this->runModule('getScroll', $params, 'scroll');
+
+        if ($this->offset) {
+            $params['from'] = $this->offset;
+        }
+
+        if ($this->limit) {
+            $params['size'] = $this->limit;
+        }
+        
+        return $params;
+    }
+
+    public function getBody(): array
+    {
         $body = [];
         $this->runModule('getBody', $body, '');
 
@@ -135,22 +155,7 @@ class QueryBuilder extends Builder
             $this->runModule('getSort', $body, 'sort');
         }
 
-        $params = [
-            'index' => $this->from,
-            'body' => $body,
-        ];
-
-        $this->runModule('getScroll', $params, 'scroll');
-
-        if ($this->offset) {
-            $params['from'] = $this->offset;
-        }
-
-        if ($this->limit) {
-            $params['size'] = $this->limit;
-        }
-        
-        return $params;
+        return $body;
     }
 
     public function getBool(): array

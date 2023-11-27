@@ -1,16 +1,26 @@
 <?php
+
 namespace nailfor\Elasticsearch\Query\Modules;
 
 class nested extends Module
 {
-    protected string $path = '';
-
-    protected array $query = [];
+    protected array $body = [];
 
     public function handle(array $params)
     {
-        $this->path = $params[0] ?? '';
-        $this->query = $params[1] ?? [];
+        $path = array_shift($params);
+
+        $body = [];
+        $closure = $params[0] ?? [];
+        $builder = $this->builder;
+        if ($closure instanceof \Closure) {
+            $query = $this->newEloquentQuery();
+            $query = $closure($query);
+            $builder = $query->getQuery();
+        }
+        $body = $builder->getBody();
+        $builder->wheres = [];
+        $this->body[$path] = $body;
 
         return $this->builder;
     }
@@ -19,20 +29,25 @@ class nested extends Module
      * Return required params
      * @return array
      */
-    public function getQueryBody() : array
+    public function getQueryBody(): array
     {
         $query = [
             'bool' => $this->builder->getBool(),
         ];
-        if ($this->path) {
-            return [
-                'nested' => [
-                    'path' => $this->path,
-                    'query' => $query,
-                ],
+        return $query;
+    }
+
+    public function getMust(): array
+    {
+        $result = [];
+        foreach ($this->body as $path => $body) {
+            $result[] = [
+                'nested' => array_merge([
+                    'path' => $path,
+                ], $body),
             ];
         }
 
-        return $query;
+        return $result;
     }
 }
