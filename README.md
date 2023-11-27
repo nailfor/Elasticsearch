@@ -174,8 +174,18 @@ $collection = $query->get();
 Example nested request
 ```
 $query = esSeartch::select([])
-    ->where('category.id', 2)
-    ->nested('category')  //Currently only simple query is supported
+    ->where('category.id', 2)   //Attention!
+    ->nested('category')        //Condition category.id = 2 will be removed from the main body
+    ->where('price', 100)       //But this condition will be added to the main body
+
+    //also u can combine simple and complicated nested requests
+    ->nested('brand', fn ($subQuery) => $subQuery           //$subQuery doesn't consist any conditions from the body
+        ->whereIn('brand.id', ['Nike', 'Sony', 'LG'])
+        ->nested('color', fn($subSubQuery) => $subSubQuery  //Also $subSubQuery doesn't consist conditions
+            ->whereIn('color.group', ['red', 'green'])      //Both of them doesn't affected the body condition 'price = 100'
+        )
+    )
+
 ```
 
 Credits
