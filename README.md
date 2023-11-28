@@ -1,5 +1,4 @@
 # PHP Elasticsearch client for Laravel
-==========================
 
 Elasticsearch client for Eloquent ORM
 
@@ -50,7 +49,7 @@ and config/database.php
 
 ```
 
-Example model
+# Example model
 ```
 namespace App\Models\db\elastic;
 
@@ -65,7 +64,7 @@ class esSearch extends Model
 }
 ```
 
-Example select
+# Example select
 ```
 esSearch::where('field', 'somedata')
     ->whereBetween('@timestamp', [$startDate, $endDate])
@@ -78,7 +77,7 @@ esSearch::where('field', 'somedata')
 !!!ATTENTION!!!
 After v0.17.0 groups returns the query result!
 
-Example groups
+# Example groups
 ```
 esSearch::where('field.data', 'somedata')
     //group name "group" by field "data.field" without subgroups
@@ -118,7 +117,7 @@ esSearch::where('field.data', 'somedata')
 ```
 
 
-Example fuzziness
+# Example fuzziness
 ```
 $query = esSearch::query($searchString, [
     'fuzziness' => 1,
@@ -126,7 +125,7 @@ $query = esSearch::query($searchString, [
 $collection = $query->get();
 ```
 
-Example scroll API
+#Example scroll API
 ```
 $query = esSearch::scroll([
         'scroll' => '1m',
@@ -144,7 +143,7 @@ esSearch::scroll([
     });
 ```
 
-Example suggest request
+# Example suggest request
 ```
 //clear
 esSeartch::where('model', 'short')
@@ -171,7 +170,7 @@ $query = esSeartch::select([
 $collection = $query->get();
 ```
 
-Example nested request
+# Example nested request
 ```
 $query = esSeartch::select([])
     ->where('category.id', 2)   //Attention!
@@ -186,6 +185,24 @@ $query = esSeartch::select([])
         )
     )
 
+```
+
+# Example bulk insert
+```
+$records = [
+    [
+        '_id' => 1,  //This is field MUST be into recordset, otherwise will be set uniqid()
+        'field1' => 'data1',
+        'field2' => 'data2',
+    ],
+    [
+        '_id' => 2,
+        'field1' => 'some data1',
+        'field2' => 'some data2',
+    ],
+
+];
+esSeartch::insert($records);
 ```
 
 Credits

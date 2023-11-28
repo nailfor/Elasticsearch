@@ -24,7 +24,7 @@ class QueryBuilder extends Builder
     /** @var nailfor\Elasticsearch\Connection $connection */
     public $connection;
 
-        protected $count;
+    protected $count;
 
     public function __construct(ConnectionInterface $connection, Grammar $grammar = null, Processor $processor = null)
     {
@@ -192,6 +192,14 @@ class QueryBuilder extends Builder
             }
         }
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert(array $values)
+    {
+        return $this->insertPlugin($values);
+    }
     
     /**
      * @inheritdoc
@@ -212,7 +220,7 @@ class QueryBuilder extends Builder
         $res = $client->index($params);
         return $res['_id'] ?? false;
     }
-    
+
     /**
      * @inheritdoc
      */
