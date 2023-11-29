@@ -6,6 +6,8 @@ class nested extends Module
 {
     protected array $body = [];
 
+    protected array $path = [];
+
     public function handle(array $params)
     {
         $path = array_shift($params);
@@ -20,7 +22,8 @@ class nested extends Module
         }
         $body = $builder->getBody();
         $builder->wheres = [];
-        $this->body[$path] = $body;
+        $this->body[] = $body;
+        $this->path[] = $path;
 
         return $this->builder;
     }
@@ -40,7 +43,8 @@ class nested extends Module
     public function getMust(): array
     {
         $result = [];
-        foreach ($this->body as $path => $body) {
+        foreach ($this->body as $key => $body) {
+            $path = $this->path[$key];
             $result[] = [
                 'nested' => array_merge([
                     'path' => $path,
