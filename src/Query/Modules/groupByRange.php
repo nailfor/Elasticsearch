@@ -33,15 +33,20 @@ class groupByRange extends groupBy
     
     protected function setField($group, $field, $params)
     {
-        $data = array_merge([
-            'field' => $field,
-        ], $params);
-        
         $fieldName = $this->field;
         
         $groups = $this->builder->$fieldName;
-        $groups[$group] = FilterFactory::create($this->type, $data);
+        $groups[$group] = $this->getData($field, $params);
         $this->builder->$fieldName = $groups;
+    }
+
+    protected function getData(string $field, mixed $params): mixed
+    {
+        $data = array_merge([
+            'field' => $field,
+        ], $params);
+
+        return FilterFactory::create($this->type, $data);
     }
 
     protected function getGroup($group, $alias, $merge) : array

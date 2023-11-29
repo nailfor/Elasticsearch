@@ -63,7 +63,7 @@ class QueryBuilder extends Builder
 
         $res = $client->search($params);
         $this->count = $res['hits']['total']['value'];
-        
+
         $items = $this->hitsPlugin($res);
         $aggregate = $this->aggregatePlugin($res);
         if (is_array($aggregate)) {
@@ -119,9 +119,14 @@ class QueryBuilder extends Builder
      */
     public function getParams() : array
     {
+        $body = $this->getBody();
+        $this->getAggregations($body);
+        $this->runModule('getSuggest', $body, 'suggest');
+        $this->runModule('getSort', $body, 'sort');
+
         $params = [
             'index' => $this->from,
-            'body' => $this->getBody(),
+            'body' => $body,
         ];
 
         $this->runModule('getScroll', $params, 'scroll');
@@ -149,13 +154,14 @@ class QueryBuilder extends Builder
             $body = [
                 'query' => reset($query),
             ];
-            
-            $this->runModule('getSuggest', $body, 'suggest');
-            $this->runModule('getGroups', $body, 'aggs');
-            $this->runModule('getSort', $body, 'sort');
         }
 
         return $body;
+    }
+
+    public function getAggregations(array &$body): void
+    {
+        $this->runModule('getGroups', $body, 'aggs');
     }
 
     public function getBool(): array
@@ -253,35 +259,8 @@ class QueryBuilder extends Builder
      */
     public function groupBy(...$groups)
     {
-        $cnt = count($groups);
-        if ($cnt == 1) {
-            $group = $groups[0];
-            if (is_string($group)) {
-                $group = [$group => $group];
-            }
-            return parent::groupBy($group);
-        }
-        
-        $group = '';
-        for($i=0; $i<$cnt; $i++) {
-            $data = $groups[$i];
-            if (is_string($data)) {
-                $group = $data;
-                $field = $this->groups[$group] ?? '';
-                if (!$field) {
-                    parent::groupBy([$group => $group]);
-                }
-            }
-            
-            if ($group && is_array($data)) {
-                $field = $this->groups[$group] ?? '';
-                $this->groups[$group] = [
-                    'field' => $field,
-                    'aggs' => $data,
-                ];
-                $group = '';
-            }
-        }
+        $groups = $this->groupPlugin(...$groups);
+        parent::groupBy($groups);
         
         return $this;
     }

@@ -1,0 +1,31 @@
+<?php
+
+namespace nailfor\Elasticsearch\Query\Modules;
+
+use nailfor\Elasticsearch\Factory\FilterFactory;
+
+class groupByNested extends groupByRange
+{
+    protected string $field = 'nested';
+    protected string $type = 'nested';
+
+    protected function getData(string $field, mixed $params): mixed
+    {
+        return [
+            'field' => $field,
+            'params' => $params,
+        ];
+    }
+
+    protected function getGroup($group, $alias, $merge) : array
+    {
+        $builder = $this->newBuilder();
+        $builder->groups = $builder->groupPlugin($group['params']);
+        $body = [];
+        $builder->getAggregations($body);
+
+        $result =  FilterFactory::create($this->type, $group['field']);
+
+        return array_merge($result, $body);
+    }
+}

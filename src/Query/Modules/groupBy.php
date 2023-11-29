@@ -41,7 +41,7 @@ class groupBy extends Module
                 $alias = $field;
             }
 
-            $res['aggs'][$alias] = FilterFactory::create('terms', [$field, $this->builder->limit]);
+            $res['aggs'][$alias] = $this->getGroup($field, $alias, null);
         }
         
         return $res;

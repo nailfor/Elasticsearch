@@ -81,7 +81,7 @@ After v0.17.0 groups returns the query result!
 ```
 esSearch::where('field.data', 'somedata')
     //group name "group" by field "data.field" without subgroups
-    ->groupBy('group'=>'data.field')
+    ->groupBy(['group'=>'data.field'])
 
     //group name "some_field" by field "some_field"
     ->groupBy('some_field')
@@ -92,7 +92,7 @@ esSearch::where('field.data', 'somedata')
     ->groupBy(['grp'=>'field'], ['subgrp'=>'sub.field'])
 
     //group field "price" by 3 group: <1000, 1000-2000 and >2000
-    ->groupByRange('price', ['ranges'=>[['to' => '1000'], ['from' => '1000', 'to' => 2000], ['from'=>2000]])
+    ->groupByRange('price', ['ranges'=>[['to' => '1000'], ['from' => '1000', 'to' => 2000], ['from'=>2000]]])
 
     //group "group" by 2 dates: before NOW-1Day and after. This is NOT filter, this is group by condition!
     //all groups with name "group" will be merged
@@ -111,9 +111,31 @@ esSearch::where('field.data', 'somedata')
 
 esSearch::where('field.data', 'somedata')
     //group name "group" by field "data.field" without subgroups with limit 10 items
-    ->groupBy('group'=>'data.field')
+    ->groupBy(['group' => 'data.field'])
     ->limit(10)
 
+//supported closure
+esSearch::groupBy(['aggregation_name' => 'field.data'], fn ($query) => $query
+    ->groupBy('some_field', fn ($subQuery) => $subQuery
+        ->groupBy(['agg3' => 'another.field'])
+    )
+)
+```
+
+# Nested aggregations
+```
+//simple group 'nested_field' same of 'nested_field'
+esSearch::groupByNested('nested_field')
+
+    //group name 'nested_group' by field 'nested.field'
+    ->groupByNested(['nested_group' => 'nested.field']) 
+
+    //By closures
+    ->groupByNested(['nested_group' => 'nested.field'], fn ($query) => $query
+        ->groupBy('some_field', fn ($subQuery) => $subQuery
+            ->groupBy(['agg3' => 'another.field'])
+        )
+    )
 ```
 
 
@@ -125,7 +147,7 @@ $query = esSearch::query($searchString, [
 $collection = $query->get();
 ```
 
-#Example scroll API
+# Example scroll API
 ```
 $query = esSearch::scroll([
         'scroll' => '1m',
@@ -204,6 +226,11 @@ $records = [
 ];
 esSeartch::insert($records);
 ```
+
+# Debug
+$query = esSearch::query()
+    ->dd(true) //default false
+;
 
 Credits
 -------

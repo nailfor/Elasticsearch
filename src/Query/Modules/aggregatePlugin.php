@@ -38,6 +38,15 @@ class aggregatePlugin extends Module
         
         $res = [];
         $buckets = $items['buckets'] ?? [];
+        if (!$buckets) {
+            foreach ($items as $item) {
+                $buckets = $item['buckets'] ?? [];
+                if ($buckets) {
+                    break;
+                }
+            }
+        }
+        
         foreach ($buckets as $item) {
             $itBucket = 0;
             foreach ($item as $key => $val) {

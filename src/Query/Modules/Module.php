@@ -17,11 +17,18 @@ class Module
         $this->builder = $builder;
     }
 
-    public function newEloquentQuery()
+    public function newEloquentQuery(): Builder
     {
         $queryBuilder = $this->builder->connection->query();
 
         return new Builder($queryBuilder);
+    }
+
+    public function newBuilder(): QueryBuilder
+    {
+        $query = $this->newEloquentQuery();
+
+        return $query->getQuery();
     }
 
     protected function getClient(): Client
