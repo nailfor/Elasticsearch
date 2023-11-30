@@ -1,10 +1,11 @@
 <?php
+
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
-class deleteIndexModule extends Module
+class existsIndex extends Module
 {
     public function handle($fields)
     {
-        return $this->query->deleteIndex();
-    }    
+        return $this->query->existsIndex($fields);
+    }
 }

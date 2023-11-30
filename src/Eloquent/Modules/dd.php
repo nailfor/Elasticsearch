@@ -5,7 +5,7 @@ namespace nailfor\Elasticsearch\Eloquent\Modules;
 /**
  * Print debug request
  */
-class ddModule extends Module
+class dd extends Module
 {
     public function handle($fields)
     {

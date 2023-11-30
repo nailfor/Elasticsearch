@@ -2,9 +2,11 @@
 
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
-class groupBySumModule extends Module
+use nailfor\Elasticsearch\Eloquent\Builder;
+
+class groupBySum extends Module
 {
-    public function handle($fields)
+    public function handle($fields): Builder
     {
         $this->query->groupBySum($fields);
 

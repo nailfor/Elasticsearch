@@ -64,6 +64,6 @@ class groupPlugin extends Module
         $query = $closure($query);
         $builder = $query->getQuery();
 
-        return $this->isArray($builder->groups, $key);
+        return $this->isArray($builder->groupBy, $key);
     }
 }

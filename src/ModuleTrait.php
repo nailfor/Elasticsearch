@@ -3,7 +3,7 @@ namespace nailfor\Elasticsearch;
 
 trait ModuleTrait
 {
-    protected $modules = [];
+    public $modules = [];
     
     public function __call($method, $parameters)
     {
@@ -15,20 +15,15 @@ trait ModuleTrait
         return parent::__call($method, $parameters);
     }
     
-    protected function init($folder, $skip, $param)
+    protected function init(string $interface, mixed $param)
     {
-        $iterator = new ClassIterator($folder, $skip);
-        foreach ($iterator->handle() as $class) {
-            $pos = strripos($class, '\\');
-            $name = substr($class, $pos+1);
-            $method = str_replace($skip, '', $name);
-            
-            
+        $iterator = new ClassIterator($interface);
+        foreach ($iterator->handle() as $method => $class) {
             $this->modules[$method] = new $class($param);
         }
     }
     
-    protected function getModules($method)
+    protected function getModules($method): array
     {
         $res = [];
         foreach($this->modules as $module) {

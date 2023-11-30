@@ -2,9 +2,11 @@
 
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
-class whereFieldExistsModule extends Module
+use nailfor\Elasticsearch\Eloquent\Builder;
+
+class whereFieldExists extends Module
 {
-    public function handle($fields)
+    public function handle($fields): Builder
     {
         $this->query->whereFieldExists($fields[0]);
 

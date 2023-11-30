@@ -2,9 +2,11 @@
 
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
-class groupByAverageModule extends Module
+use nailfor\Elasticsearch\Eloquent\Builder;
+
+class groupByAverage extends Module
 {
-    public function handle($fields)
+    public function handle($fields): Builder
     {
         $this->query->groupByAverage($fields);
 

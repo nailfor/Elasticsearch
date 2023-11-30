@@ -11,6 +11,7 @@ use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Processors\Processor;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use nailfor\Elasticsearch\Query\Modules\ModuleInterface;
 
 /**
  * Elasticsearch
@@ -28,7 +29,7 @@ class QueryBuilder extends Builder
 
     public function __construct(ConnectionInterface $connection, Grammar $grammar = null, Processor $processor = null)
     {
-        $this->init(__DIR__.'/Modules', 'Module', $this);
+        $this->init(ModuleInterface::class, $this);
         
         return parent::__construct($connection, $grammar, $processor);
     }
@@ -261,6 +262,10 @@ class QueryBuilder extends Builder
     {
         $groups = $this->groupPlugin(...$groups);
         parent::groupBy($groups);
+
+        $group = $this->groupBy ?? [];
+        $group['groups'] = $this->groups;
+        $this->groupBy = $group;
         
         return $this;
     }

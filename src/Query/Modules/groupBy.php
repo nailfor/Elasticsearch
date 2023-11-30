@@ -1,29 +1,14 @@
 <?php
+
 namespace nailfor\Elasticsearch\Query\Modules;
+
 use nailfor\Elasticsearch\Factory\FilterFactory;
 
 class groupBy extends Module
 {
     protected string $field = 'groups';
-    
-    /**
-     * Return groups aggregations
-     * @return array
-     */
-    public function getGroups($groups = []) : array
-    {
-        $field = $this->field;
-        $array = $this->builder->$field;
-        if (!is_array($array)) {
-            return $groups;
-        }
-        
-        foreach($array as $alias => $group) {
-            $groups[$alias] = $this->getGroup($group, $alias, $groups[$alias] ?? 0);
-        }
-        
-        return $groups;
-    }
+
+    use Traits\Groups;
     
     /**
      * Parse request and build aggregation
@@ -33,17 +18,29 @@ class groupBy extends Module
     protected function getGroup($group, $alias, $merge) : array
     {
         $field = $group['field'] ?? $group;
-        $res = FilterFactory::create('terms', [$field, $this->builder->limit]);
+        $result = FilterFactory::create('terms', [$field, $this->builder->limit]);
         
         $aggs = $group['aggs'] ?? [];
-        foreach($aggs as $alias => $field) {
-            if (is_numeric($alias)) {
-                $alias = $field;
-            }
+        if ($aggs) {
+            foreach ($aggs as $grp => $agg) {
+                if ($grp === 'groups') {
+                    foreach ($agg as $subAlias => $subGroup) {
+                        $result['aggs'][$alias] = $this->getGroup($subGroup, $subAlias, null);
+                    }
+                    continue;
+                }
 
-            $res['aggs'][$alias] = $this->getGroup($field, $alias, null);
+                if (is_string($agg)) {
+                    $result['aggs'][$grp] = $this->getGroup($agg, $grp, null);
+                    continue;
+                }
+
+                foreach ($agg as $group => $data) {
+                    $result['aggs'][$group] = $data;
+                }
+            }
         }
         
-        return $res;
+        return $result;
     }
 }

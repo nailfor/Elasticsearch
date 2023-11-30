@@ -2,9 +2,11 @@
 
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
-class groupByDateRangeModule extends Module
+use nailfor\Elasticsearch\Eloquent\Builder;
+
+class groupByDateRange extends Module
 {
-    public function handle($fields)
+    public function handle($fields): Builder
     {
         $this->query->groupByDateRange($fields);
 

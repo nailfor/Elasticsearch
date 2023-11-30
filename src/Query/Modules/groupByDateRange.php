@@ -2,7 +2,7 @@
 
 namespace nailfor\Elasticsearch\Query\Modules;
 
-class groupByDateRange extends groupByRange
+class groupByDateRange extends ModuleGroup
 {
     protected string $field = 'ranges';
     protected string $type = 'rangeDate';

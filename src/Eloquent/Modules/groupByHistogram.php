@@ -2,9 +2,11 @@
 
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
-class groupByHistogramModule extends Module
+use nailfor\Elasticsearch\Eloquent\Builder;
+
+class groupByHistogram extends Module
 {
-    public function handle($fields)
+    public function handle($fields): Builder
     {
         $this->query->groupByHistogram($fields);
 

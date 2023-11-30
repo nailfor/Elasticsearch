@@ -1,4 +1,5 @@
 <?php
+
 namespace nailfor\Elasticsearch\Query\Modules;
 
 use Elastic\Elasticsearch\Client;
@@ -6,7 +7,7 @@ use nailfor\Elasticsearch\Eloquent\Builder;
 use nailfor\Elasticsearch\Factory\FilterFactory;
 use nailfor\Elasticsearch\Query\QueryBuilder;
 
-class Module
+abstract class Module implements ModuleInterface
 {
     protected QueryBuilder $builder;
     protected array $skip = [];

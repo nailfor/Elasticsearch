@@ -2,7 +2,6 @@
 
 namespace nailfor\Elasticsearch\Query\Modules;
 
-use nailfor\Elasticsearch\Eloquent\Builder;
 use nailfor\Elasticsearch\Factory\FilterFactory;
 
 class suggest extends Module

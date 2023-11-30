@@ -2,9 +2,11 @@
 
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
-class groupByIntervalModule extends Module
+use nailfor\Elasticsearch\Eloquent\Builder;
+
+class groupByInterval extends Module
 {
-    public function handle($fields)
+    public function handle($fields): Builder
     {
         $this->query->groupByInterval($fields);
 

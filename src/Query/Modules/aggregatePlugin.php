@@ -24,20 +24,17 @@ class aggregatePlugin extends Module
      * @param array $append
      * @return array
      */
-    protected function getBuckets($items, $agg, $append = []) : array
+    protected function getBuckets(array $items, string $agg, array $append = []): array
     {
         $append['__aggregate_name'] = $agg;
-        $val = $items['value'] ?? 0;
-        if ($val)  {
-            return [
-                array_merge($append, [
-                    'count' => $val,
-                ]),
-            ];
-        }
-        
-        $res = [];
+
         $buckets = $items['buckets'] ?? [];
+        if (!$buckets && ($items['doc_count'] ?? 0)) {
+            [$key, $item] = $this->getLast($items);
+
+            return $this->getBuckets($item, $key);
+        }
+
         if (!$buckets) {
             foreach ($items as $item) {
                 $buckets = $item['buckets'] ?? [];
@@ -46,7 +43,19 @@ class aggregatePlugin extends Module
                 }
             }
         }
-        
+
+        if (!$buckets) {
+            return [
+                array_merge($append, $items)
+            ];
+        }
+
+        return $this->deepBucket($buckets, $agg, $append);
+    }
+
+    protected function deepBucket(array $buckets, string $agg, array $append): array
+    {
+        $res = [];
         foreach ($buckets as $item) {
             $itBucket = 0;
             foreach ($item as $key => $val) {
@@ -60,14 +69,33 @@ class aggregatePlugin extends Module
                 }
             }
             
-            if (!$itBucket) {
-                $res[] = array_merge($append, [
-                    $agg    => $item['key'],
-                    'count' => $item['doc_count'],
-                ]);
+            if ($itBucket) {
+                continue;
             }
+
+            [$key, $it] = $this->getLast($item);
+            if (is_array($it)) {
+                $res[] = array_merge(['__aggregate_name' => $key], $it);
+                continue;
+            }
+
+            $res[] = array_merge($append, [
+                $agg    => $item['key'] ?? $item,
+                'count' => $item['doc_count'] ?? $item['count'] ?? 0,
+            ]);
         }
 
         return $res;
+    }
+
+    protected function getLast(array $data): array
+    {
+        $keys = array_keys($data);
+        $key = end($keys);
+
+        return [
+            $key,
+            $data[$key],
+        ];
     }
 }

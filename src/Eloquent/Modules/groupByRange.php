@@ -2,9 +2,11 @@
 
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
-class groupByRangeModule extends Module
+use nailfor\Elasticsearch\Eloquent\Builder;
+
+class groupByRange extends Module
 {
-    public function handle($fields)
+    public function handle($fields): Builder
     {
         $this->query->groupByRange($fields);
 

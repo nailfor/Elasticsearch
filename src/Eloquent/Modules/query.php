@@ -2,12 +2,14 @@
 
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
+use nailfor\Elasticsearch\Eloquent\Builder;
+
 /**
  * Set search query
  */
-class queryModule extends Module
+class query extends Module
 {
-    public function handle($fields)
+    public function handle($fields): Builder
     {
         $this->query->must(...$fields);
 

@@ -4,7 +4,7 @@ namespace nailfor\Elasticsearch\Query\Modules;
 
 use nailfor\Elasticsearch\Factory\FilterFactory;
 
-class groupByNested extends groupByRange
+class groupByNested extends ModuleGroup
 {
     protected string $field = 'nested';
     protected string $type = 'nested';
@@ -20,7 +20,7 @@ class groupByNested extends groupByRange
     protected function getGroup($group, $alias, $merge) : array
     {
         $builder = $this->newBuilder();
-        $builder->groups = $builder->groupPlugin($group['params']);
+        $builder->groupBy = $builder->groupPlugin($group['params']);
         $body = [];
         $builder->getAggregations($body);
 

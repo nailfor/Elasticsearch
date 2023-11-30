@@ -17,6 +17,6 @@ class existsIndex extends Module
             'type'  => '_doc',
         ];
         
-        return $client->indices()->exists($index);
+        return $client->indices()->exists($index)->asBool();
     }
 }

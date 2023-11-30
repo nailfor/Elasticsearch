@@ -2,7 +2,7 @@
 
 namespace nailfor\Elasticsearch\Query\Modules;
 
-class groupByAverage extends groupByRange
+class groupByAverage extends ModuleGroup
 {
     protected string $field = 'average';
     protected string $type = 'average';

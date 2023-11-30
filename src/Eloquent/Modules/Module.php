@@ -5,7 +5,7 @@ namespace nailfor\Elasticsearch\Eloquent\Modules;
 use nailfor\Elasticsearch\Eloquent\Builder;
 use nailfor\Elasticsearch\Query\QueryBuilder;
 
-abstract class Module 
+abstract class Module implements ModuleInterface
 {
     protected QueryBuilder $query;
 

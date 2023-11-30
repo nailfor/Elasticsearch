@@ -4,6 +4,7 @@ namespace nailfor\Elasticsearch\Eloquent;
 
 use nailfor\Elasticsearch\Query\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use nailfor\Elasticsearch\Eloquent\Modules\ModuleInterface;
 use nailfor\Elasticsearch\ModuleTrait;
 /**
  * Elasticsearch
@@ -16,7 +17,7 @@ class Builder extends EloquentBuilder
     public function __construct(QueryBuilder $query)
     {
         $this->query = $query;
-        $this->init(__DIR__.'/Modules', 'Module', [
+        $this->init(ModuleInterface::class, [
             'query' => $query,
             'builder' => $this,
         ]);

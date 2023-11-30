@@ -2,12 +2,14 @@
 
 namespace nailfor\Elasticsearch\Eloquent\Modules;
 
+use nailfor\Elasticsearch\Eloquent\Builder;
+
 /**
  * Set search query
  */
-class scrollModule extends Module
+class scroll extends Module
 {
-    public function handle($params)
+    public function handle($params): Builder
     {
         $this->query->scroll($params[0] ?? null);
 

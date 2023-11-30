@@ -91,24 +91,6 @@ esSearch::where('field.data', 'somedata')
     //another style
     ->groupBy(['grp'=>'field'], ['subgrp'=>'sub.field'])
 
-    //group field "price" by 3 group: <1000, 1000-2000 and >2000
-    ->groupByRange('price', ['ranges'=>[['to' => '1000'], ['from' => '1000', 'to' => 2000], ['from'=>2000]]])
-
-    //group "group" by 2 dates: before NOW-1Day and after. This is NOT filter, this is group by condition!
-    //all groups with name "group" will be merged
-    ->groupByDateRange(['group'=>'date.field'], ['ranges'=>['to' => 'now-1y/d', 'from' => 'now-1y/d']])
-
-    //group "date.field" by interval "hour"
-    ->groupByInterval(['graph'=>'date.field'], ['interval' => 'hour'])
-
-    //group and calculate average value
-    ->groupBy(['groupName' => 'field_for_group'])
-    ->groupByAverage('groupName', ['field' => 'field.name'])
-
-    //group and calculate sum
-    ->groupBy(['groupName' => 'field_for_group'])
-    ->groupBySum('groupName', ['field' => 'field.name'])
-
 esSearch::where('field.data', 'somedata')
     //group name "group" by field "data.field" without subgroups with limit 10 items
     ->groupBy(['group' => 'data.field'])
@@ -120,6 +102,39 @@ esSearch::groupBy(['aggregation_name' => 'field.data'], fn ($query) => $query
         ->groupBy(['agg3' => 'another.field'])
     )
 )
+```
+
+# Range aggregations
+```
+    //group field "price" by 3 group: <1000, 1000-2000 and >2000
+    ->groupByRange('price', ['ranges'=>[['to' => '1000'], ['from' => '1000', 'to' => 2000], ['from'=>2000]]])
+```
+
+# Date aggregations
+```
+    //group "group" by 2 dates: before NOW-1Day and after. This is NOT filter, this is group by condition!
+    //all groups with name "group" will be merged
+    ->groupByDateRange(['group'=>'date.field'], ['ranges'=>['to' => 'now-1y/d', 'from' => 'now-1y/d']])
+```
+
+# Interval aggregations
+```
+    //group "date.field" by interval "hour"
+    ->groupByInterval(['graph'=>'date.field'], ['interval' => 'hour'])
+```
+
+# Average aggregations
+```
+    //group and calculate average value
+    ->groupBy(['groupName' => 'field_for_group'])
+    ->groupByAverage('groupName', ['field' => 'field.name'])
+```
+
+# Sum aggregations
+```
+    //group and calculate sum
+    ->groupBy(['groupName' => 'field_for_group'])
+    ->groupBySum('groupName', ['field' => 'field.name'])
 ```
 
 # Nested aggregations
@@ -138,6 +153,19 @@ esSearch::groupByNested('nested_field')
     )
 ```
 
+# Stats aggregations
+```
+esSearch::groupByStats('some_field')
+    // or
+    ->groupByStats(['group_name' => 'some_field'])
+
+//You can combine them together
+esSearch::groupByNested('nested_field', fn($query) => 
+    $query->groupBy(['group' => 'field.id'], fn($query) => $query
+        ->groupByStats(['values' => 'properties.value'])
+    )
+)
+```
 
 # Example fuzziness
 ```

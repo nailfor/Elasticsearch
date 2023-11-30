@@ -1,4 +1,5 @@
 <?php
+
 namespace nailfor\Elasticsearch\Query\Modules;
 
 class groupByHistogram extends groupByAverage
