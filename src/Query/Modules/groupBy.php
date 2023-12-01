@@ -25,7 +25,7 @@ class groupBy extends Module
             foreach ($aggs as $grp => $agg) {
                 if ($grp === 'groups') {
                     foreach ($agg as $subAlias => $subGroup) {
-                        $result['aggs'][$alias] = $this->getGroup($subGroup, $subAlias, null);
+                        $result['aggs'][$subAlias] = $this->getGroup($subGroup, $subAlias, null);
                     }
                     continue;
                 }
