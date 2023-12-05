@@ -3,6 +3,7 @@
 namespace nailfor\Elasticsearch\Query\Modules;
 
 use nailfor\Elasticsearch\Factory\FilterFactory;
+use nailfor\Elasticsearch\Query\Pipes\Aggregate\Group;
 
 class groupBy extends Module
 {
@@ -21,26 +22,32 @@ class groupBy extends Module
         $result = FilterFactory::create('terms', [$field, $this->builder->limit]);
         
         $aggs = $group['aggs'] ?? [];
+        $type = Group::getType();
         if ($aggs) {
             foreach ($aggs as $grp => $agg) {
                 if ($grp === 'groups') {
                     foreach ($agg as $subAlias => $subGroup) {
-                        $result['aggs'][$subAlias] = $this->getGroup($subGroup, $subAlias, null);
+                        $result['aggs'][$type . $subAlias] = $this->getGroup($subGroup, $subAlias, null);
                     }
                     continue;
                 }
 
                 if (is_string($agg)) {
-                    $result['aggs'][$grp] = $this->getGroup($agg, $grp, null);
+                    $result['aggs'][$type . $grp] = $this->getGroup($agg, $grp, null);
                     continue;
                 }
 
-                foreach ($agg as $group => $data) {
-                    $result['aggs'][$group] = $data;
+                foreach ($agg as $grp => $data) {
+                    $result['aggs'][$grp] = $data;
                 }
             }
         }
         
         return $result;
+    }
+
+    protected function getPrefix(): string
+    {
+        return Group::getType();
     }
 }

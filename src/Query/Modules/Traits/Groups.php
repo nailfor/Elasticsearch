@@ -17,7 +17,9 @@ trait Groups
             return $groups;
         }
         
+        $preffix = $this->getPrefix();
         foreach($array as $alias => $group) {
+            $alias = $preffix . $alias;
             $groups[$alias] = $this->getGroup($group, $alias, $groups[$alias] ?? 0);
         }
 
@@ -27,5 +29,10 @@ trait Groups
     protected function getGroup($group, $alias, $merge) : array
     {
         return $group;
-    }    
+    }
+
+    protected function getPrefix(): string
+    {
+        return '';
+    }
 }

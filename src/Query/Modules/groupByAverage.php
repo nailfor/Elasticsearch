@@ -2,6 +2,8 @@
 
 namespace nailfor\Elasticsearch\Query\Modules;
 
+use nailfor\Elasticsearch\Query\Pipes\Aggregate\Average;
+
 class groupByAverage extends ModuleGroup
 {
     protected string $field = 'average';
@@ -22,5 +24,10 @@ class groupByAverage extends ModuleGroup
         $merge['aggs'] = $res;
                 
         return $merge;
+    }
+
+    protected function getPrefix(): string
+    {
+        return Average::getType();
     }
 }

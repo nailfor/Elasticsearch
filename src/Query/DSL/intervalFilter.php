@@ -23,7 +23,7 @@ class intervalFilter extends Filter
     protected function append()
     {
         return [
-            'interval' => $this->interval,
+            'calendar_interval' => $this->interval,
             'time_zone' => $this->zone,
         ];
     }

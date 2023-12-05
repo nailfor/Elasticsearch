@@ -2,6 +2,8 @@
 
 namespace nailfor\Elasticsearch\Query\Modules;
 
+use nailfor\Elasticsearch\Query\Pipes\Aggregate\DateRange;
+
 class groupByDateRange extends ModuleGroup
 {
     protected string $field = 'ranges';
@@ -18,5 +20,10 @@ class groupByDateRange extends ModuleGroup
                 "{$alias}_group" => $merge,
            ],
         ]);
+    }
+
+    protected function getPrefix(): string
+    {
+        return DateRange::getType();
     }
 }

@@ -3,6 +3,7 @@
 namespace nailfor\Elasticsearch\Query\Modules;
 
 use nailfor\Elasticsearch\Factory\FilterFactory;
+use nailfor\Elasticsearch\Query\Pipes\Aggregate\Nested;
 
 class groupByNested extends ModuleGroup
 {
@@ -27,5 +28,10 @@ class groupByNested extends ModuleGroup
         $result =  FilterFactory::create($this->type, $group['field']);
 
         return array_merge($result, $body);
+    }
+
+    protected function getPrefix(): string
+    {
+        return Nested::getType();
     }
 }

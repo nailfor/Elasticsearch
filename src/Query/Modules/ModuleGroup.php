@@ -41,7 +41,7 @@ abstract class ModuleGroup extends Module
         $fieldName = $this->field;
         
         $data = $this->builder->groupBy ?? [];
-        $data[$fieldName][$group] = $this->getData($field, $params);
+        $data[$fieldName][$this->getPrefix() . $group] = $this->getData($field, $params);
         $this->builder->groupBy = $data;
     }
 
