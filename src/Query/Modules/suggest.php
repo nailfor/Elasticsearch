@@ -38,8 +38,14 @@ class suggest extends Module
         return FilterFactory::create('suggest', $where);
     }
 
-    public function getSuggest(): array
+    public function getBody(): array
     {
-        return $this->suggest;
+        if (!$this->suggest) {
+            return [];
+        }
+
+        return [
+            'suggest' => $this->suggest,
+        ];
     }
 }

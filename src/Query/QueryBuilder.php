@@ -122,8 +122,6 @@ class QueryBuilder extends Builder
     {
         $body = $this->getBody();
         $this->getAggregations($body);
-        $this->runModule('getSuggest', $body, 'suggest');
-        $this->runModule('getSort', $body, 'sort');
 
         $params = [
             'index' => $this->from,
@@ -146,18 +144,9 @@ class QueryBuilder extends Builder
     public function getBody(): array
     {
         $body = [];
-        $this->runModule('getBody', $body, '');
+        $this->runModule('getBody', $body, 'body', true);
 
-        if (!$body) {
-            $query = [];
-            $this->runModule('getQueryBody', $query, '', true);
-
-            $body = [
-                'query' => reset($query),
-            ];
-        }
-
-        return $body;
+        return $body['body'] ?? [];
     }
 
     public function getAggregations(array &$body): void

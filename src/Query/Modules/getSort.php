@@ -8,7 +8,7 @@ class getSort extends Module
      * Return sort params
      * @return array
      */
-    public function getSort() : array
+    public function getBody() : array
     {
         $res = [];
         foreach($this->builder->orders ?? [] as $order) {
@@ -19,7 +19,13 @@ class getSort extends Module
                 ],
             ];
         }
+
+        if (!$res) {
+            return [];
+        }
         
-        return $res;
+        return [
+            'sort' => $res,
+        ];
     }
 }
