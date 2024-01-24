@@ -6,7 +6,7 @@ use nailfor\Elasticsearch\Query\Pipes\Aggregate\DateRange;
 
 class groupByDateRange extends ModuleGroup
 {
-    protected string $field = 'ranges';
+    protected string $field = 'dataranges';
     protected string $type = 'rangeDate';
     
     protected function getGroup($group, $alias, $merge) : array
