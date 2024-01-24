@@ -6,16 +6,19 @@ use Closure;
 
 abstract class AbstractPipe implements PipeInterface
 {
-    abstract protected function check(array $data): bool;
+    abstract protected function check(string $key): bool;
     abstract protected function do(array $data): array;
 
-    public function handle(array $data, Closure $next)
+    public function handle(array $dto, Closure $next)
     {
-        if ($this->check($data)) {
-            return $this->do($data);
+        $data = $dto['data'] ?? [];
+        foreach ($data as $key => $val) {
+            if ($this->check($key)) {
+                $aggs = $this->do($val);
+                $dto['result'] = array_merge($aggs, $dto['result'] ?? []);
+            }
         }
 
-        return $next($data);
+        return $next($dto);
     }
-
 }

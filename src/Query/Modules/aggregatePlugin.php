@@ -2,7 +2,7 @@
 
 namespace nailfor\Elasticsearch\Query\Modules;
 
-use nailfor\Elasticsearch\Query\Pipes\Aggregate\AbstractAggregator;
+use nailfor\Elasticsearch\Factory\AggregateFactory;
 
 class aggregatePlugin extends Module
 {
@@ -15,6 +15,6 @@ class aggregatePlugin extends Module
             return [];
         }
 
-        return AbstractAggregator::getAggregate($data);
+        return AggregateFactory::handle($data);
     }
 }

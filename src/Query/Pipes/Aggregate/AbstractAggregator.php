@@ -2,7 +2,7 @@
 
 namespace nailfor\Elasticsearch\Query\Pipes\Aggregate;
 
-use nailfor\Elasticsearch\Factory\PipeFactory;
+use nailfor\Elasticsearch\Factory\AggregateFactory;
 use nailfor\Elasticsearch\Query\Pipes\AbstractPipe;
 
 abstract class AbstractAggregator extends AbstractPipe implements AggregatePipeInterface
@@ -11,16 +11,11 @@ abstract class AbstractAggregator extends AbstractPipe implements AggregatePipeI
 
     protected const AGG_NAME = '__aggregate_name';
 
+    protected const AGG_PARENT_TYPE = '__aggregate_parent_type';
+
     protected const AGG_PARENT = '__aggregate_parent';
 
     protected string $alias;
-
-    public static function getAggregate(array $aggregate): array
-    {
-        $hub = PipeFactory::create(AggregatePipeInterface::class);
-
-        return $hub->pipe($aggregate);
-    }
 
     public static function getType(): string
     {
@@ -29,11 +24,7 @@ abstract class AbstractAggregator extends AbstractPipe implements AggregatePipeI
 
     protected function do(array $data): array
     {
-        $key = array_key_first($data);
-        $type = static::getType();
-        $this->alias = substr($key, strlen($type));
-
-        return $data[$key];
+        return $data;
     }
 
     protected function getBucket(array $item): array
@@ -41,8 +32,9 @@ abstract class AbstractAggregator extends AbstractPipe implements AggregatePipeI
         $result = [];
         foreach ($item as $key => $val) {
             if (is_array($val)) {
-                $data = static::getAggregate([
+                $data = AggregateFactory::handle([
                     $key => array_merge([
+                        static::AGG_PARENT_TYPE => $this->alias,
                         static::AGG_PARENT => $item['key'] ?? null,
                     ], $val),
                 ]);
@@ -63,15 +55,16 @@ abstract class AbstractAggregator extends AbstractPipe implements AggregatePipeI
         $parent = $data[static::AGG_PARENT] ?? null;
         if ($parent) {
             $result[static::AGG_PARENT] = $parent;
+            $result[static::AGG_PARENT_TYPE] = $data[static::AGG_PARENT_TYPE] ?? null;
         }
 
         return $result;
     }
 
-    protected function check(array $data): bool
+    protected function check(string $key): bool
     {
-        $key = array_key_first($data);
         $type = static::getType();
+        $this->alias = substr($key, strlen($type));
 
         return strpos($key, $type) === 0;
     }
