@@ -1,20 +1,21 @@
 <?php
+
 namespace nailfor\Elasticsearch;
 
 trait ModuleTrait
 {
     public $modules = [];
-    
+
     public function __call($method, $parameters)
     {
         $module = $this->modules[$method] ?? '';
         if ($module && method_exists($module, 'handle')) {
             return $module->handle($parameters);
         }
-        
+
         return parent::__call($method, $parameters);
     }
-    
+
     protected function init(string $interface, mixed $param)
     {
         $iterator = new ClassIterator($interface);
@@ -22,7 +23,7 @@ trait ModuleTrait
             $this->modules[$method] = new $class($param);
         }
     }
-    
+
     protected function getModules($method): array
     {
         $res = [];
@@ -31,7 +32,7 @@ trait ModuleTrait
                 $res[] = $module;
             }
         }
-        
+
         return $res;
     }
 }

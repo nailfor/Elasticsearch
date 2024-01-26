@@ -9,11 +9,11 @@ class createIndex extends Module
         list($settings, $mappingProperties, $shards, $replicas) = $params;
 
         $client = $this->getClient();
-        
+
         $index = [
             'index' => $this->builder->from,
         ];
-        
+
         if ($settings) {
             $index['body']['settings'] = $settings;
         }
@@ -23,7 +23,7 @@ class createIndex extends Module
                 'properties' => $mappingProperties,
             ];
         }
-        
+
         if (!is_null($shards)) {
             $index['body']['settings']['number_of_shards'] = $shards;
         }

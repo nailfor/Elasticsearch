@@ -8,7 +8,7 @@ class statsFilter extends Filter
 
     public function __construct($data)
     {
-        $this->column   = 'field';
-        $this->value    = $data['field'] ?? $data;
+        $this->column = 'field';
+        $this->value = $data['field'] ?? $data;
     }
 }

@@ -3,7 +3,7 @@
 namespace nailfor\Elasticsearch\Query\Modules;
 
 /**
- * Drop index
+ * Drop index.
  * @return type
  */
 class deleteIndex extends Module
@@ -15,7 +15,7 @@ class deleteIndex extends Module
         $index = [
             'index' => $this->builder->from,
         ];
-        
+
         return $client->indices()->delete($index);
     }
 }

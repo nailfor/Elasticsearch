@@ -9,10 +9,9 @@ class mustFilter extends Module
     ];
 
     /**
-     * Return must params
-     * @return array
+     * Return must params.
      */
-    public function getMust() : array
+    public function getMust(): array
     {
         return $this->getWhereFilter();
     }

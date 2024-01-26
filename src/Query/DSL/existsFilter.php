@@ -8,7 +8,7 @@ class existsFilter extends Filter
 
     public function __construct($data)
     {
-        $this->value    = $data;
-        $this->column   = 'field';
+        $this->value = $data;
+        $this->column = 'field';
     }
 }

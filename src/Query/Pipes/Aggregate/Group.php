@@ -13,14 +13,13 @@ class Group extends AbstractAggregator
 
         $append = $this->getAppend($data);
         $result = [];
-        foreach ($buckets as $item)
-        {
+        foreach ($buckets as $item) {
             $drop = $this->map($item);
             $result[] = array_merge($append, $drop);
 
             $bucket = $this->getBucket($item);
             $result = array_merge($result, $bucket);
-                        
+
         }
 
         return $result;

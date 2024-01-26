@@ -5,10 +5,9 @@ namespace nailfor\Elasticsearch\Query\Modules;
 class getSort extends Module
 {
     /**
-     * Return sort params
-     * @return array
+     * Return sort params.
      */
-    public function getBody() : array
+    public function getBody(): array
     {
         $res = [];
         foreach($this->builder->orders ?? [] as $order) {
@@ -23,7 +22,7 @@ class getSort extends Module
         if (!$res) {
             return [];
         }
-        
+
         return [
             'sort' => $res,
         ];

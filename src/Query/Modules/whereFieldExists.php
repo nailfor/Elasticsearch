@@ -7,20 +7,19 @@ use nailfor\Elasticsearch\Factory\FilterFactory;
 class whereFieldExists extends Module
 {
     protected $field = 'exists';
-    
 
     public function handle($params)
     {
         $field = $this->field;
         $data = $this->builder->$field;
-        
+
         $data[] = $params[0];
         $this->builder->$field = $data;
 
         return $this->builder;
     }
-    
-    public function getMust() : array
+
+    public function getMust(): array
     {
         $res = [];
         $field = $this->field;
@@ -30,7 +29,7 @@ class whereFieldExists extends Module
                 $res[] = FilterFactory::create('exists', $exists);
             }
         }
-        
+
         return $res;
     }
 }

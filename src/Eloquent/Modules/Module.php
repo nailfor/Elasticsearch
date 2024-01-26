@@ -10,12 +10,12 @@ abstract class Module implements ModuleInterface
     protected QueryBuilder $query;
 
     protected Builder $builder;
-    
+
     public function __construct(array $params)
     {
         $this->query = $params['query'];
         $this->builder = $params['builder'];
     }
-    
+
     abstract public function handle($fields);
 }

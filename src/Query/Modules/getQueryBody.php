@@ -10,14 +10,14 @@ class getQueryBody extends Module
     }
 
     /**
-     * Return required params
-     * @return array
+     * Return required params.
      */
     public function getQueryBody(): array
     {
         $query = [
             'bool' => $this->builder->getBool(),
         ];
+
         return $query;
     }
 }

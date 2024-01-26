@@ -6,7 +6,7 @@ use ReflectionClass;
 
 class ClassIterator
 {
-    const NAMESPACE = 'nailfor\Elasticsearch';
+    public const NAMESPACE = 'nailfor\Elasticsearch';
 
     protected array $skip = [
         '.',
@@ -29,7 +29,7 @@ class ClassIterator
     {
         $dir = $this->getDir();
         $baseDir = $this->getBaseDir();
-        $folder  = $baseDir.$dir;
+        $folder = $baseDir . $dir;
 
         $namespace = $this->getNamespace();
 

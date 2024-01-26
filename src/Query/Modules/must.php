@@ -15,10 +15,9 @@ class must extends Module
     }
 
     /**
-     * Return must params
-     * @return array
+     * Return must params.
      */
-    public function getMust() : array
+    public function getMust(): array
     {
         $columns = $this->builder->columns;
         $query = $this->builder->query;
@@ -26,7 +25,7 @@ class must extends Module
         $res = [];
         if ($query) {
             $match = [
-                'fields'=> $columns ? : ['*'],
+                'fields' => $columns ?: ['*'],
                 'query' => $query,
             ];
             $match = array_merge($match, $this->params);
@@ -35,11 +34,10 @@ class must extends Module
                 $match['operator'] = 'and';
             }
             $res['multi_match'] = $match;
+        } else {
+            $res['match_all'] = (object) [];
         }
-        else {
-            $res['match_all'] = (object)[];
-        }
-        
+
         return [$res];
     }
 }

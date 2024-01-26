@@ -2,9 +2,8 @@
 
 namespace nailfor\Elasticsearch;
 
-use nailfor\Elasticsearch\Eloquent\Model;
-
 use Illuminate\Support\ServiceProvider;
+use nailfor\Elasticsearch\Eloquent\Model;
 
 class ElasticsearchServiceProvider extends ServiceProvider
 {
@@ -27,6 +26,7 @@ class ElasticsearchServiceProvider extends ServiceProvider
         $this->app->resolving('db', function ($db) {
             $db->extend('elasticsearch', function ($config, $name) {
                 $config['name'] = $name;
+
                 return new Connection(null, '', '', $config);
             });
         });

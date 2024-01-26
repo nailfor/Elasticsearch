@@ -7,20 +7,19 @@ use nailfor\Elasticsearch\Query\Pipes\Aggregate\Group;
 
 class groupBy extends Module
 {
+    use Traits\Groups;
+
     protected string $field = 'groups';
 
-    use Traits\Groups;
-    
     /**
-     * Parse request and build aggregation
+     * Parse request and build aggregation.
      * @param array $group
-     * @return array
      */
-    protected function getGroup($group, $alias, $merge) : array
+    protected function getGroup($group, $alias, $merge): array
     {
         $field = $group['field'] ?? $group;
         $result = FilterFactory::create('terms', [$field, $this->builder->limit]);
-        
+
         $aggs = $group['aggs'] ?? [];
         $type = Group::getType();
         if ($aggs) {
@@ -42,7 +41,7 @@ class groupBy extends Module
                 }
             }
         }
-        
+
         return $result;
     }
 

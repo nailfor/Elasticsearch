@@ -4,7 +4,7 @@ namespace nailfor\Elasticsearch\Query\Modules;
 
 class getBody extends Module
 {
-    public function getBody() : array
+    public function getBody(): array
     {
         $result = [
             'query' => $this->builder->getQueryBody(),

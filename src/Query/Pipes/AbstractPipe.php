@@ -7,6 +7,7 @@ use Closure;
 abstract class AbstractPipe implements PipeInterface
 {
     abstract protected function check(string $key): bool;
+
     abstract protected function do(array $data): array;
 
     public function handle(array $dto, Closure $next)

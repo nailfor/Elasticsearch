@@ -8,7 +8,7 @@ class nestedFilter extends Filter
 
     public function __construct($data)
     {
-        $this->column   = 'path';
-        $this->value    = $data['field'] ?? $data;
+        $this->column = 'path';
+        $this->value = $data['field'] ?? $data;
     }
 }

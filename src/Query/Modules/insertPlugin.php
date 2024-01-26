@@ -14,7 +14,7 @@ class insertPlugin extends Module
             return true;
         }
 
-        if (! is_array(reset($values))) {
+        if (!is_array(reset($values))) {
             $values = [$values];
         }
 
@@ -22,7 +22,7 @@ class insertPlugin extends Module
         foreach ($values as $val) {
             $body[] = [
                 'index' => [
-                    '_index' => $this->builder->from, 
+                    '_index' => $this->builder->from,
                     '_id' => $val['_id'] ?? uniqid(),
                 ],
             ];

@@ -33,7 +33,7 @@ class suggest extends Module
         return $this->builder;
     }
 
-    protected function getFilter($type, $where) : array
+    protected function getFilter($type, $where): array
     {
         return FilterFactory::create('suggest', $where);
     }

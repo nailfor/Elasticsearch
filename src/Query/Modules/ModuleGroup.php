@@ -6,19 +6,19 @@ use nailfor\Elasticsearch\Factory\FilterFactory;
 
 abstract class ModuleGroup extends Module
 {
+    use Traits\Groups;
+
     protected string $field;
 
     protected string $type;
 
-    use Traits\Groups;
-
     public function handle($params)
     {
         $groups = $params[0];
-        
+
         $data = $groups[0] ?? '';
         $params = $groups[1] ?? [];
-        
+
         if (is_string($data)) {
             $data = [
                 $data => $data,
@@ -28,7 +28,7 @@ abstract class ModuleGroup extends Module
         if (!is_array($data)) {
             return $this->builder;
         }
-        
+
         foreach($data as $group => $field) {
             $this->setField($group, $field, $params);
         }
@@ -39,7 +39,7 @@ abstract class ModuleGroup extends Module
     protected function setField($group, $field, $params)
     {
         $fieldName = $this->field;
-        
+
         $data = $this->builder->groupBy ?? [];
         $data[$fieldName][$this->getPrefix() . $group] = $this->getData($field, $params);
         $this->builder->groupBy = $data;

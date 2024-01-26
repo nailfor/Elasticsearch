@@ -5,7 +5,7 @@ namespace nailfor\Elasticsearch\Eloquent\Modules;
 use nailfor\Elasticsearch\Eloquent\Builder;
 
 /**
- * Set search query
+ * Set search query.
  */
 class suggest extends Module
 {

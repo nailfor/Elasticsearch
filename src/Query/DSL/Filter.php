@@ -5,22 +5,24 @@ namespace nailfor\Elasticsearch\Query\DSL;
 class Filter
 {
     protected $column;
+
     protected $value;
+
     protected $operator;
+
     protected $field = 'term';
-    
+
     public function __construct($data)
     {
-        $this->column   = $data['column'] ?? '';
-        $this->value    = $data['value'] ?? '';
+        $this->column = $data['column'] ?? '';
+        $this->value = $data['value'] ?? '';
         $this->operator = $data['operator'] ?? '=';
     }
-    
+
     /**
-     * Return current filter
-     * @return array
+     * Return current filter.
      */
-    public function getFilter() : array
+    public function getFilter(): array
     {
         $field = $this->field;
 
@@ -32,18 +34,18 @@ class Filter
             $field => $res,
         ];
     }
-    
+
     /**
-     * Return append for getFilter
+     * Return append for getFilter.
      * @return array
      */
     protected function append()
     {
         return [];
     }
-    
+
     /**
-     * Get value
+     * Get value.
      * @return mixed
      */
     protected function getValue()

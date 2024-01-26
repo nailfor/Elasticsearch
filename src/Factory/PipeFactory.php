@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace nailfor\Elasticsearch\Factory;
 
 use Closure;
-use Illuminate\Pipeline\Pipeline;
 use Illuminate\Pipeline\Hub;
+use Illuminate\Pipeline\Pipeline;
 
 class PipeFactory extends Factory
 {
@@ -22,7 +22,7 @@ class PipeFactory extends Factory
     protected static function getHub(): Hub
     {
         /**@var Hub $hub */
-        $hub     = app(Hub::class);
+        $hub = app(Hub::class);
         $closure = Closure::fromCallable([static::class, 'registry']);
         $hub->defaults($closure);
 

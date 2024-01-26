@@ -10,9 +10,9 @@ use nailfor\Elasticsearch\Query\QueryBuilder;
 abstract class Module implements ModuleInterface
 {
     protected QueryBuilder $builder;
+
     protected array $skip = [];
-    
-    
+
     public function __construct(QueryBuilder $builder)
     {
         $this->builder = $builder;
@@ -36,12 +36,11 @@ abstract class Module implements ModuleInterface
     {
         return $this->builder->connection->getClient();
     }
-    
+
     /**
-     * Return where params
-     * @return array
+     * Return where params.
      */
-    protected function getWhereFilter($wheres = null) : array
+    protected function getWhereFilter($wheres = null): array
     {
         $res = [];
         $wheres = $wheres ?? $this->builder->wheres;
@@ -51,14 +50,14 @@ abstract class Module implements ModuleInterface
             if (in_array($operator, $this->skip)) {
                 continue;
             }
-            
+
             $res[] = $this->getFilter($type, $where);
         }
-        
+
         return $res;
     }
 
-    protected function getFilter($type, $where) : array
+    protected function getFilter($type, $where): array
     {
         return FilterFactory::create($type, $where);
     }

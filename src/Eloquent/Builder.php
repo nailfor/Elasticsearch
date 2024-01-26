@@ -2,18 +2,19 @@
 
 namespace nailfor\Elasticsearch\Eloquent;
 
-use nailfor\Elasticsearch\Query\QueryBuilder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use nailfor\Elasticsearch\Eloquent\Modules\ModuleInterface;
 use nailfor\Elasticsearch\ModuleTrait;
+use nailfor\Elasticsearch\Query\QueryBuilder;
+
 /**
- * Elasticsearch
+ * Elasticsearch.
  *
  */
 class Builder extends EloquentBuilder
 {
     use ModuleTrait;
-    
+
     public function __construct(QueryBuilder $query)
     {
         $this->query = $query;
@@ -22,18 +23,16 @@ class Builder extends EloquentBuilder
             'builder' => $this,
         ]);
     }
-    
+
     /**
-     * Create an elasticsearch index
-     * @param int $shards
-     * @param int $replicas
+     * Create an elasticsearch index.
      * @return type
      */
     public function createIndex(int $shards = null, int $replicas = null)
     {
         $settings = $this->model->getIndexSettings();
         $mappings = $this->model->getMapping();
-        
+
         return $this->query->createIndex($settings, $mappings, $shards, $replicas);
     }
 
@@ -43,7 +42,7 @@ class Builder extends EloquentBuilder
         $att = $this->model->getAttributes();
         $key = $this->model->getKeyName();
         $values[$key] = $att[$key] ?? 0;
-        
+
         return $query->update($values);
     }
 
@@ -52,11 +51,11 @@ class Builder extends EloquentBuilder
      */
     public function clone()
     {
-        $builder    = $this->getQuery();
+        $builder = $this->getQuery();
         $newBuilder = $builder->connection->query();
         $queryClone = clone $this;
         $queryClone->setQuery($newBuilder);
-        
+
         return $queryClone;
     }
 }

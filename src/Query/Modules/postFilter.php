@@ -21,7 +21,7 @@ class postFilter extends Module
             if (!is_array($filter)) {
                 continue;
             }
-            
+
             foreach($filter as $key => $val) {
                 if ($key == 'match_all') {
                     continue 2;

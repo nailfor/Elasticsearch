@@ -5,7 +5,7 @@ namespace nailfor\Elasticsearch\Eloquent;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 /**
- * Elasticsearch
+ * Elasticsearch.
  *
  */
 class Model extends BaseModel
@@ -16,7 +16,9 @@ class Model extends BaseModel
      * @var string|null
      */
     protected $connection = 'elasticsearch';
+
     protected $dateFormat = 'U';
+
     protected $primaryKey = '_id';
 
     /**
@@ -36,26 +38,25 @@ class Model extends BaseModel
             if (!is_object($value)) {
                 return $value;
             }
+
             return $value->timestamp;
         }
-        
+
         return parent::fromDateTime($value);
     }
-    
+
     /**
-     * Get indexSettings if exists
-     * @return array
+     * Get indexSettings if exists.
      */
-    public function getIndexSettings() : array
+    public function getIndexSettings(): array
     {
         return $this->indexSettings ?? [];
     }
-    
+
     /**
-     * Get mappingProperties if exists
-     * @return array
+     * Get mappingProperties if exists.
      */
-    public function getMapping() : array
+    public function getMapping(): array
     {
         return $this->mappingProperties ?? [];
     }

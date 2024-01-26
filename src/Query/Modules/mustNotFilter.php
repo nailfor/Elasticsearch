@@ -8,12 +8,11 @@ class mustNotFilter extends Module
         null,
         '=',
     ];
-    
+
     /**
-     * Return must params
-     * @return array
+     * Return must params.
      */
-    public function getMustNot() : array
+    public function getMustNot(): array
     {
         return $this->getWhereFilter();
     }

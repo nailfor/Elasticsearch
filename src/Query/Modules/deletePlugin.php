@@ -7,7 +7,7 @@ class deletePlugin extends Module
     public function handle($params)
     {
         $client = $this->getClient();
-        
+
         $id = $params[0] ?? 0;
         if (!$id) {
             foreach($this->builder->wheres ?? [] as $where) {
@@ -16,17 +16,17 @@ class deletePlugin extends Module
                     break;
                 }
             }
-            
+
             if (!$id) {
                 return;
             }
         }
-        
+
         $params = [
             'index' => $this->builder->from,
-            'id' => $id
+            'id' => $id,
         ];
-        
+
         return $client->delete($params);
-    }    
+    }
 }

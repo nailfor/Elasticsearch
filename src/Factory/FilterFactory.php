@@ -14,7 +14,7 @@ class FilterFactory
             $class = Filter::class;
         }
         $f = new $class($params);
-        
+
         return $f->getFilter();
     }
 }

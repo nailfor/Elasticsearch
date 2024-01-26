@@ -2,19 +2,18 @@
 
 namespace nailfor\Elasticsearch\Query;
 
-use nailfor\Elasticsearch\GetSetTrait;
-use nailfor\Elasticsearch\ModuleTrait;
-
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Processors\Processor;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use nailfor\Elasticsearch\GetSetTrait;
+use nailfor\Elasticsearch\ModuleTrait;
 use nailfor\Elasticsearch\Query\Modules\ModuleInterface;
 
 /**
- * Elasticsearch
+ * Elasticsearch.
  *
  */
 class QueryBuilder extends Builder
@@ -30,10 +29,10 @@ class QueryBuilder extends Builder
     public function __construct(ConnectionInterface $connection, Grammar $grammar = null, Processor $processor = null)
     {
         $this->init(ModuleInterface::class, $this);
-        
+
         return parent::__construct($connection, $grammar, $processor);
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -41,9 +40,10 @@ class QueryBuilder extends Builder
     {
         $res = $this->onceWithColumns(Arr::wrap($columns), function () {
             $items = $this->runSelect();
+
             return $this->processor->processSelect($this, $items);
         });
-        
+
         return new Collection($res);
     }
 
@@ -80,19 +80,19 @@ class QueryBuilder extends Builder
             $scroll['scroll_id'] = $scroll_id;
             $this->scroll($scroll);
         }
-        
+
         return $items;
     }
 
     /**
-     * Return count of records
+     * Return count of records.
      * @return int
      */
     protected function getCount()
     {
         return $this->count;
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -100,7 +100,7 @@ class QueryBuilder extends Builder
     {
         return $this->runPaginationCountQuery($columns);
     }
-    
+
     protected function runPaginationCountQuery($columns = ['*'])
     {
         $without = $this->unions ? ['orders', 'limit', 'offset'] : ['columns', 'orders', 'limit', 'offset'];
@@ -108,17 +108,16 @@ class QueryBuilder extends Builder
             ->cloneWithoutBindings($this->unions ? ['order'] : ['select', 'order'])
             ->setAggregate('count', $this->withoutSelectAliases($columns))
         ;
-        
+
         $query->get();
-        
+
         return $query->getCount();
     }
-    
+
     /**
-     * Return request params
-     * @return array
+     * Return request params.
      */
-    public function getParams() : array
+    public function getParams(): array
     {
         $body = $this->getBody();
         $this->getAggregations($body);
@@ -137,7 +136,7 @@ class QueryBuilder extends Builder
         if ($this->limit) {
             $params['size'] = $this->limit;
         }
-        
+
         return $params;
     }
 
@@ -163,7 +162,7 @@ class QueryBuilder extends Builder
         return $bool;
     }
 
-    protected function runModule($name, &$body, $field, $add = false) 
+    protected function runModule($name, &$body, $field, $add = false)
     {
         $res = [];
         $modules = $this->getModules($name);
@@ -172,18 +171,16 @@ class QueryBuilder extends Builder
             if ($add && $res) {
                 if ($field) {
                     $body[$field] = array_merge($body[$field] ?? [], $res);
-                }
-                else {
+                } else {
                     $body[] = $res;
                 }
             }
         }
-        
-        if ($res  && !$add) {
+
+        if ($res && !$add) {
             if ($field) {
                 $body[$field] = $res;
-            }
-            else {
+            } else {
                 $body = $res;
             }
         }
@@ -196,7 +193,7 @@ class QueryBuilder extends Builder
     {
         return $this->insertPlugin($values);
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -207,13 +204,14 @@ class QueryBuilder extends Builder
             'index' => $this->from,
             'body' => $values,
         ];
-        
+
         $id = $this->getElasticKey($values, $sequence);
         if ($id) {
             $params['id'] = $id;
         }
-        
+
         $res = $client->index($params);
+
         return $res['_id'] ?? false;
     }
 
@@ -224,18 +222,16 @@ class QueryBuilder extends Builder
     {
         $this->updatePlugin($values);
     }
-    
+
     /**
-     * Create uniq key
-     * @param array $values
+     * Create uniq key.
      * @param string $sequence
-     * @return string
      */
     public function getElasticKey(array $values, $sequence): string
     {
         return $values[$sequence] ?? '';
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -255,7 +251,7 @@ class QueryBuilder extends Builder
         $group = $this->groupBy ?? [];
         $group['groups'] = $this->groups;
         $this->groupBy = $group;
-        
+
         return $this;
     }
 }

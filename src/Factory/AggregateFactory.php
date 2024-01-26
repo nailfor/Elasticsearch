@@ -11,9 +11,9 @@ class AggregateFactory
         $hub = PipeFactory::create(AggregatePipeInterface::class);
 
         $data = $hub->pipe([
-            'data' => $aggregate
+            'data' => $aggregate,
         ]);
 
         return $data['result'] ?? [];
-    }    
+    }
 }

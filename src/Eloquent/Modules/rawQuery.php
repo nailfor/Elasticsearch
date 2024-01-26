@@ -5,7 +5,7 @@ namespace nailfor\Elasticsearch\Eloquent\Modules;
 use nailfor\Elasticsearch\Eloquent\Builder;
 
 /**
- * Set raw query
+ * Set raw query.
  */
 class rawQuery extends Module
 {

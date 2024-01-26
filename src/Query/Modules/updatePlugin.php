@@ -17,13 +17,13 @@ class updatePlugin extends Module
                 'doc' => $values,
             ],
         ];
-        
+
         if ($id) {
             $params['id'] = $id;
         }
-        
+
         $res = $client->update($params);
-        
+
         return $res['_id'] ?? false;
     }
 }

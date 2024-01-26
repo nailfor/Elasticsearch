@@ -3,7 +3,7 @@
 namespace nailfor\Elasticsearch\Query\Modules;
 
 /**
- * Check exists index
+ * Check exists index.
  * @return bool
  */
 class existsIndex extends Module
@@ -14,9 +14,9 @@ class existsIndex extends Module
 
         $index = [
             'index' => $this->builder->from,
-            'type'  => '_doc',
+            'type' => '_doc',
         ];
-        
+
         return $client->indices()->exists($index)->asBool();
     }
 }

@@ -7,7 +7,7 @@ class suggestFilter extends Filter
     /**
      * @inheritDoc
      */
-    public function getFilter() : array
+    public function getFilter(): array
     {
         $field = $this->field;
 
