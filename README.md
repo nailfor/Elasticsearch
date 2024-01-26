@@ -255,6 +255,15 @@ $records = [
 esSeartch::insert($records);
 ```
 
+# Example post_filter
+```
+$query = esSearch::groupBy(['group' => 'field.id'])
+    ->postFilter(fn($query) => $query
+        ->where('field', 'value')
+        ->nested('category')
+    )
+```
+
 # Debug
 $query = esSearch::query()
     ->dd(true) //default false
