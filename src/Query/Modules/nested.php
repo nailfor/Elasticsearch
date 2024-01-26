@@ -28,18 +28,6 @@ class nested extends Module
         return $this->builder;
     }
 
-    /**
-     * Return required params
-     * @return array
-     */
-    public function getQueryBody(): array
-    {
-        $query = [
-            'bool' => $this->builder->getBool(),
-        ];
-        return $query;
-    }
-
     public function getMust(): array
     {
         $result = [];

@@ -4,14 +4,17 @@ namespace nailfor\Elasticsearch\Query\Modules;
 
 class getBody extends Module
 {
-    /**
-     * Return sort params
-     * @return array
-     */
     public function getBody() : array
     {
-        return [
+        $result = [
             'query' => $this->builder->getQueryBody(),
         ];
+
+        $columns = $this->builder->columns;
+        if ($columns) {
+            $result['_source'] = $columns;
+        }
+
+        return $result;
     }
 }
