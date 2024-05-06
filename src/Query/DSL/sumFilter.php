@@ -4,9 +4,9 @@ namespace nailfor\Elasticsearch\Query\DSL;
 
 class sumFilter extends Filter
 {
-    protected $field = 'sum';
+    protected string $field = 'sum';
 
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->column = 'field';
         $this->value = $data['field'];

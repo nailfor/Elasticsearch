@@ -4,13 +4,13 @@ namespace nailfor\Elasticsearch\Query\DSL;
 
 class rangeDateFilter extends Filter
 {
-    protected $field = 'date_range';
+    protected string $field = 'date_range';
 
-    protected $format;
+    protected string $format;
 
-    protected $ranges;
+    protected array $ranges;
 
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->column = 'field';
         $this->value = $data['field'];
@@ -22,7 +22,7 @@ class rangeDateFilter extends Filter
      * Return append for getFilter.
      * @return array
      */
-    protected function append()
+    protected function append(): array
     {
         return [
             'format' => $this->format,

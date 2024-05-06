@@ -4,9 +4,9 @@ namespace nailfor\Elasticsearch\Query\DSL;
 
 class existsFilter extends Filter
 {
-    protected $field = 'exists';
+    protected string $field = 'exists';
 
-    public function __construct($data)
+    public function __construct(mixed $data)
     {
         $this->value = $data;
         $this->column = 'field';

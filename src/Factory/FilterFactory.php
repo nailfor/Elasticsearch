@@ -6,7 +6,7 @@ use nailfor\Elasticsearch\Query\DSL\Filter;
 
 class FilterFactory
 {
-    public static function create(string $type, $params)
+    public static function create(string $type, mixed $params)
     {
         $class = "nailfor\\Elasticsearch\\Query\\DSL\\{$type}Filter";
 

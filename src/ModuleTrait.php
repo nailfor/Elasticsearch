@@ -4,7 +4,7 @@ namespace nailfor\Elasticsearch;
 
 trait ModuleTrait
 {
-    public $modules = [];
+    public array $modules = [];
 
     public function __call($method, $parameters)
     {
@@ -16,7 +16,31 @@ trait ModuleTrait
         return parent::__call($method, $parameters);
     }
 
-    protected function init(string $interface, mixed $param)
+    public function runModule(string $name, array &$body, ?string $field, bool $add = false): void
+    {
+        $res = [];
+        $modules = $this->getModules($name);
+        foreach ($modules as $module) {
+            $res = $module->$name($res);
+            if ($add && $res) {
+                if ($field) {
+                    $body[$field] = array_merge($body[$field] ?? [], $res);
+                } else {
+                    $body[] = $res;
+                }
+            }
+        }
+
+        if ($res && !$add) {
+            if ($field) {
+                $body[$field] = $res;
+            } else {
+                $body = $res;
+            }
+        }
+    }     
+
+    protected function init(string $interface, mixed $param): void
     {
         $iterator = new ClassIterator($interface);
         foreach ($iterator->handle() as $method => $class) {

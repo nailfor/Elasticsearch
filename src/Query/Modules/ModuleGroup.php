@@ -6,7 +6,7 @@ use nailfor\Elasticsearch\Factory\FilterFactory;
 
 abstract class ModuleGroup extends Module
 {
-    use Traits\Groups;
+    use Traits\GroupsTrait;
 
     protected string $field;
 

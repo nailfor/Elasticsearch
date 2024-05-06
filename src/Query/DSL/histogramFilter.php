@@ -4,11 +4,11 @@ namespace nailfor\Elasticsearch\Query\DSL;
 
 class histogramFilter extends Filter
 {
-    protected $field = 'histogram';
+    protected string $field = 'histogram';
 
     protected $interval;
 
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->column = 'field';
         $this->value = $data['field'];
@@ -18,7 +18,7 @@ class histogramFilter extends Filter
     /**
      * Return append for getFilter.
      */
-    protected function append()
+    protected function append(): array
     {
         return [
             'interval' => $this->interval,

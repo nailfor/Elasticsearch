@@ -140,50 +140,9 @@ class QueryBuilder extends Builder
         return $params;
     }
 
-    public function getBody(): array
-    {
-        $body = [];
-        $this->runModule('getBody', $body, 'body', true);
-
-        return $body['body'] ?? [];
-    }
-
     public function getAggregations(array &$body): void
     {
         $this->runModule('getGroups', $body, 'aggs');
-    }
-
-    public function getBool(): array
-    {
-        $bool = [];
-        $this->runModule('getMust', $bool, 'must', true);
-        $this->runModule('getMustNot', $bool, 'mustNot', true);
-
-        return $bool;
-    }
-
-    protected function runModule($name, &$body, $field, $add = false)
-    {
-        $res = [];
-        $modules = $this->getModules($name);
-        foreach ($modules as $module) {
-            $res = $module->$name($res);
-            if ($add && $res) {
-                if ($field) {
-                    $body[$field] = array_merge($body[$field] ?? [], $res);
-                } else {
-                    $body[] = $res;
-                }
-            }
-        }
-
-        if ($res && !$add) {
-            if ($field) {
-                $body[$field] = $res;
-            } else {
-                $body = $res;
-            }
-        }
     }
 
     /**

@@ -6,6 +6,12 @@ use nailfor\Elasticsearch\Factory\FilterFactory;
 
 class suggest extends Module
 {
+    use Traits\WhereTrait;
+
+    protected array $skip = [];
+    
+    protected string $type = '';
+
     protected array $suggest = [];
 
     public function handle(array $params)
@@ -33,7 +39,7 @@ class suggest extends Module
         return $this->builder;
     }
 
-    protected function getFilter($type, $where): array
+    protected function getFilter(string $type, array $where): array
     {
         return FilterFactory::create('suggest', $where);
     }

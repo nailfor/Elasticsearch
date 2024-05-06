@@ -19,7 +19,7 @@ class groupByNested extends ModuleGroup
         ];
     }
 
-    protected function getGroup($group, $alias, $merge): array
+    protected function getGroup(array|string $group, string $alias, ?array $merge): array
     {
         $builder = $this->newBuilder();
         $builder->groupBy = $builder->groupPlugin($group['params']);

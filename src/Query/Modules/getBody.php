@@ -4,6 +4,15 @@ namespace nailfor\Elasticsearch\Query\Modules;
 
 class getBody extends Module
 {
+    public function handle(): array
+    {
+        $body = [];
+        $builder = $this->builder;
+        $builder->runModule('getBody', $body, 'body', true);
+
+        return $body['body'] ?? [];
+    }
+
     public function getBody(): array
     {
         $result = [

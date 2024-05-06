@@ -2,7 +2,7 @@
 
 namespace nailfor\Elasticsearch\Query\Modules;
 
-class mustFilter extends Module
+class shouldFilter extends Module
 {
     use Traits\WhereTrait;
 
@@ -10,12 +10,12 @@ class mustFilter extends Module
         '!=',
     ];
 
-    protected string $type = 'and';
+    protected string $type = 'or';
 
     /**
      * Return must params.
      */
-    public function getMust(): array
+    public function getShould(): array
     {
         return $this->getWhereFilter();
     }

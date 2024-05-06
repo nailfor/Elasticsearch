@@ -2,7 +2,7 @@
 
 namespace nailfor\Elasticsearch\Query\Modules\Traits;
 
-trait Groups
+trait GroupsTrait
 {
     /**
      * Return groups aggregations.
@@ -16,16 +16,16 @@ trait Groups
             return $groups;
         }
 
-        $preffix = $this->getPrefix();
+        $prefix = $this->getPrefix();
         foreach($array as $alias => $group) {
-            $alias = $preffix . $alias;
-            $groups[$alias] = $this->getGroup($group, $alias, $groups[$alias] ?? 0);
+            $alias = $prefix . $alias;
+            $groups[$alias] = $this->getGroup($group, $alias, $groups[$alias] ?? null);
         }
 
         return $groups;
     }
 
-    protected function getGroup($group, $alias, $merge): array
+    protected function getGroup(array|string $group, string $alias, ?array $merge): array
     {
         return $group;
     }

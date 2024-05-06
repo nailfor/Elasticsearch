@@ -4,11 +4,11 @@ namespace nailfor\Elasticsearch\Query\DSL;
 
 class termsFilter extends Filter
 {
-    protected $field = 'terms';
+    protected string $field = 'terms';
 
-    protected $limit = 0;
+    protected int $limit = 0;
 
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->column = 'field';
         $this->value = $data['value'] ?? $data[0] ?? $data;
@@ -18,7 +18,7 @@ class termsFilter extends Filter
     /**
      * {@inheritdoc}
      */
-    protected function append()
+    protected function append(): array
     {
         if (!$this->limit) {
             return [];

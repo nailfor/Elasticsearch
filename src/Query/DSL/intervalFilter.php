@@ -6,11 +6,11 @@ class intervalFilter extends Filter
 {
     protected $field = 'date_histogram';
 
-    protected $interval;
+    protected string $interval;
 
-    protected $zone;
+    protected string $zone;
 
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->column = 'field';
         $this->value = $data['field'];
@@ -22,7 +22,7 @@ class intervalFilter extends Filter
      * Return append for getFilter.
      * @return array
      */
-    protected function append()
+    protected function append(): array
     {
         return [
             'calendar_interval' => $this->interval,

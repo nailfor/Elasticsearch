@@ -10,7 +10,7 @@ class groupByDateRange extends ModuleGroup
 
     protected string $type = 'rangeDate';
 
-    protected function getGroup($group, $alias, $merge): array
+    protected function getGroup(array|string $group, string $alias, ?array $merge): array
     {
         if (!$merge) {
             return $group;

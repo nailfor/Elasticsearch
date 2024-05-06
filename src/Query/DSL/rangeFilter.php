@@ -4,11 +4,11 @@ namespace nailfor\Elasticsearch\Query\DSL;
 
 class rangeFilter extends Filter
 {
-    protected $field = 'range';
+    protected string $field = 'range';
 
-    protected $ranges;
+    protected array $ranges;
 
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->column = 'field';
         $this->value = $data['field'];
@@ -19,7 +19,7 @@ class rangeFilter extends Filter
      * Return append for getFilter.
      * @return array
      */
-    protected function append()
+    protected function append(): array
     {
         return [
             'ranges' => $this->ranges,

@@ -8,9 +8,9 @@ class betweenFilter extends Filter
 
     protected $to;
 
-    protected $field = 'range';
+    protected string $field = 'range';
 
-    public function __construct($data)
+    public function __construct(array $data)
     {
         parent::__construct($data);
 
@@ -23,7 +23,7 @@ class betweenFilter extends Filter
     /**
      * @inheritdoc
      */
-    protected function getValue()
+    protected function getValue(): mixed
     {
         $result = [];
         if ($this->from) {

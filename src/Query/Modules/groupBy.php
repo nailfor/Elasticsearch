@@ -7,7 +7,7 @@ use nailfor\Elasticsearch\Query\Pipes\Aggregate\Group;
 
 class groupBy extends Module
 {
-    use Traits\Groups;
+    use Traits\GroupsTrait;
 
     protected string $field = 'groups';
 
@@ -15,7 +15,7 @@ class groupBy extends Module
      * Parse request and build aggregation.
      * @param array $group
      */
-    protected function getGroup($group, $alias, $merge): array
+    protected function getGroup(array|string $group, string $alias, ?array $merge): array
     {
         $field = $group['field'] ?? $group;
         $result = FilterFactory::create('terms', [$field, $this->builder->limit]);
