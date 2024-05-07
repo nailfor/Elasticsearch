@@ -4,7 +4,7 @@ namespace nailfor\Elasticsearch\Query\DSL;
 
 class intervalFilter extends Filter
 {
-    protected $field = 'date_histogram';
+    protected string $field = 'date_histogram';
 
     protected string $interval;
 
