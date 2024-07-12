@@ -130,6 +130,13 @@ esSearch::groupBy(['aggregation_name' => 'field.data'], fn ($query) => $query
     ->groupByAverage('groupName', ['field' => 'field.name'])
 ```
 
+# Min/max aggregations
+```
+    ->groupByMin('groupName', ['field' => 'field.name'])
+    ->groupByMax('groupName', ['field' => 'field.name'])
+```
+
+
 # Sum aggregations
 ```
     //group and calculate sum
