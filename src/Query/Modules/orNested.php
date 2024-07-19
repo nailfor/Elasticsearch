@@ -2,9 +2,9 @@
 
 namespace nailfor\Elasticsearch\Query\Modules;
 
-class nested extends AbstractNested
+class orNested extends AbstractNested
 {
-    public function getMust(): array
+    public function getShould(): array
     {
         return $this->nested();
     }

@@ -241,6 +241,9 @@ $query = esSeartch::select([])
             ->whereIn('color.group', ['red', 'green'])      //Both of them doesn't affected the body condition 'price = 100'
         )
     )
+    ->orNested('property', fn(subQuery) => $subQuery
+        ->where('property.value', 'milked')
+    )
 
 ```
 
