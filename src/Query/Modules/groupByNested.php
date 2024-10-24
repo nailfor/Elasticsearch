@@ -25,6 +25,15 @@ class groupByNested extends ModuleGroup
         $builder->groupBy = $builder->groupPlugin($group['params']);
         $body = [];
         $builder->getAggregations($body);
+        //TODO: Do fix from $query->limit(100)
+        $limit = config('elasticsearch.groupsize', 100);
+        if ($limit) {
+            $aggs = $body['aggs'] ?? [];
+            $key = array_key_first($aggs);
+            $data = $aggs[$key];
+            $data['terms']['size'] = $limit;
+            $body['aggs'][$key] = $data;
+        }
 
         $result = FilterFactory::create($this->type, $group['field']);
 
