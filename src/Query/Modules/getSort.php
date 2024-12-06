@@ -12,6 +12,14 @@ class getSort extends Module
         $res = [];
         foreach($this->builder->orders ?? [] as $order) {
             $column = $order['column'];
+            $params = $order['params'] ?? null;
+            if ($params) {
+                $res[] = [
+                    $column => $params,
+                ];
+                continue;
+            }
+
             $res[] = [
                 $column => [
                     'order' => $order['direction'],

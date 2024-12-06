@@ -213,4 +213,16 @@ class QueryBuilder extends Builder
 
         return $this;
     }
+
+    public function orderBy($column, $direction = 'asc')
+    {
+        if (is_string($direction)) {
+            parent::orderBy($column, $direction);
+        }
+
+        $this->orders[] = [
+            'column' => $column,
+            'params' => $direction,
+        ];
+    }
 }
