@@ -88,7 +88,7 @@ class QueryBuilder extends Builder
      * Return count of records.
      * @return int
      */
-    protected function getCount()
+    public function getCount()
     {
         return $this->count;
     }

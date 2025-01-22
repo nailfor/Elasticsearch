@@ -3,9 +3,12 @@
 namespace nailfor\Elasticsearch\Eloquent;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Pagination\Paginator;
 use nailfor\Elasticsearch\Eloquent\Modules\ModuleInterface;
 use nailfor\Elasticsearch\ModuleTrait;
 use nailfor\Elasticsearch\Query\QueryBuilder;
+use Closure;
+use Http\Promise\Promise;
 
 /**
  * Elasticsearch.
@@ -26,7 +29,7 @@ class Builder extends EloquentBuilder
 
     /**
      * Create an elasticsearch index.
-     * @return type
+     * @return Promise
      */
     public function createIndex(int $shards = null, int $replicas = null)
     {
@@ -57,5 +60,29 @@ class Builder extends EloquentBuilder
         $queryClone->setQuery($newBuilder);
 
         return $queryClone;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    {
+        $page = $page ?: Paginator::resolveCurrentPage($pageName);
+        $results = $this
+            ->forPage($page, $perPage)
+            ->get($columns)
+        ;
+        $total = $this->toBase()->getCount();
+
+        $perPage = $perPage instanceof Closure
+            ? $perPage($total)
+            : $perPage
+        ;
+        $perPage = $perPage ?: $this->model->getPerPage();
+
+        return $this->paginator($results, $total, $perPage, $page, [
+            'path' => Paginator::resolveCurrentPath(),
+            'pageName' => $pageName,
+        ]);
     }
 }
